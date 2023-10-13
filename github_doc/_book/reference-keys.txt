@@ -7,7 +7,7 @@ solution-step-2-bound-the-average-effect-in-the-always-stratum
 why-regression
 upper-bound-left---right
 lower-bound-left---right
-package-functionality
+basic-functionality
 simulate-data
 the-pstratreg-function
 positive-monotonicity

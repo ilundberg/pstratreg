@@ -460,8 +460,8 @@ In the latter case, we need model-based principal stratification.
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_lower.png}
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_control.png}
 
-\hypertarget{package-functionality}{%
-\chapter{Package functionality}\label{package-functionality}}
+\hypertarget{basic-functionality}{%
+\chapter{Basic functionality}\label{basic-functionality}}
 
 This page illustrates the basic functionality of the \texttt{pstratreg} function. This function conducts parametric principal stratification analysis to estimate average causal effect among the always-valid subgroup whose outcome would exist in either treatment condition.
 
@@ -527,12 +527,12 @@ The data has four variables
 \end{Shaded}
 
 \begin{verbatim}
-#>            x     a     m          y
-#> 1  1.8903557  TRUE  TRUE  4.5479923
-#> 2 -1.0969603 FALSE  TRUE -1.0752880
-#> 3  2.1409722  TRUE  TRUE  3.7838368
-#> 4 -0.4493622  TRUE FALSE         NA
-#> 5 -0.9346476  TRUE  TRUE -0.7496423
+#>             x     a    m           y
+#> 1  0.64963549  TRUE TRUE  4.14526998
+#> 2 -0.09736403 FALSE TRUE  0.11223486
+#> 3  0.42887715 FALSE TRUE -0.55115508
+#> 4 -0.48915985  TRUE TRUE  0.03956927
+#> 5  0.77785241 FALSE TRUE  0.76739211
 \end{verbatim}
 
 \hypertarget{the-pstratreg-function}{%
@@ -556,13 +556,13 @@ The call below runs a principal stratification regression analysis with default 
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.805 0.483    0.322
+#> 1 0.942 0.685    0.257
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.114           1.31           2.50
+#> 1           1.05           1.47           1.89
 \end{verbatim}
 
 \hypertarget{positive-monotonicity}{%
@@ -585,8 +585,6 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_positive =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_m = formula(m \textasciitilde{} : Monotonicity violated in 2 \% of cases}
-\CommentTok{\#\textgreater{} Forcing mhat1\_trunc = mhat0\_trunc at midpoint of estimates for those}
 \end{Highlighting}
 \end{Shaded}
 
@@ -595,13 +593,13 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.805 0.483    0.322
+#> 1 0.942 0.685    0.257
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.642           1.29           1.90
+#> 1           1.12           1.47           1.82
 \end{verbatim}
 
 \hypertarget{negative-monotonicity}{%
@@ -620,10 +618,8 @@ In this particular simulation, negative monotonicity does not hold and you see b
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_negative =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_m = formula(m \textasciitilde{} : Monotonicity violated in 98 \% of cases}
+\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_m = formula(m \textasciitilde{} : Monotonicity violated in 100 \% of cases}
 \CommentTok{\#\textgreater{} Forcing mhat1\_trunc = mhat0\_trunc at midpoint of estimates for those}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a),}
-\CommentTok{\#\textgreater{} formula\_m = formula(m \textasciitilde{} : Recoding 2 \% of p\_s to sum to 1}
 \end{Highlighting}
 \end{Shaded}
 
@@ -632,13 +628,13 @@ In this particular simulation, negative monotonicity does not hold and you see b
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.805 0.483    0.322
+#> 1 0.942 0.685    0.257
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1           1.31           1.31           1.31
+#> 1           1.47           1.47           1.47
 \end{verbatim}
 
 \hypertarget{aggregate-in-subgroups}{%
@@ -657,13 +653,13 @@ First we create some groups for illustration
 \end{Shaded}
 
 \begin{verbatim}
-#>              x     a     m          y group1 group2
-#> 1  1.890355707  TRUE  TRUE  4.5479923  FALSE   TRUE
-#> 2 -1.096960263 FALSE  TRUE -1.0752880   TRUE  FALSE
-#> 3  2.140972209  TRUE  TRUE  3.7838368  FALSE   TRUE
-#> 4 -0.449362183  TRUE FALSE         NA  FALSE  FALSE
-#> 5 -0.934647605  TRUE  TRUE -0.7496423   TRUE  FALSE
-#> 6  0.008346858  TRUE  TRUE  3.1489893  FALSE  FALSE
+#>             x     a    m           y group1 group2
+#> 1  0.64963549  TRUE TRUE  4.14526998  FALSE   TRUE
+#> 2 -0.09736403 FALSE TRUE  0.11223486  FALSE  FALSE
+#> 3  0.42887715 FALSE TRUE -0.55115508  FALSE  FALSE
+#> 4 -0.48915985  TRUE TRUE  0.03956927  FALSE  FALSE
+#> 5  0.77785241 FALSE TRUE  0.76739211  FALSE   TRUE
+#> 6  0.71949258  TRUE TRUE  1.88018061  FALSE   TRUE
 \end{verbatim}
 
 and then we apply the function to estimate within those groups.
@@ -685,17 +681,17 @@ and then we apply the function to estimate within those groups.
 #> # A tibble: 3 x 5
 #>   group1 group2 mhat1 mhat0 effect_m
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.821 0.484    0.336
-#> 2 FALSE  TRUE   0.923 0.433    0.489
-#> 3 TRUE   FALSE  0.679 0.524    0.155
+#> 1 FALSE  FALSE  0.981 0.719    0.262
+#> 2 FALSE  TRUE   0.998 0.875    0.123
+#> 3 TRUE   FALSE  0.847 0.487    0.360
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 3 x 5
 #>   group1 group2 effect_y_lower effect_y_naive effect_y_upper
 #>   <lgl>  <lgl>           <dbl>          <dbl>          <dbl>
-#> 1 FALSE  FALSE           0.121           1.30           2.47
-#> 2 FALSE  TRUE            0.376           1.47           2.56
-#> 3 TRUE   FALSE          -0.159           1.16           2.48
+#> 1 FALSE  FALSE           1.06            1.47           1.88
+#> 2 FALSE  TRUE            1.30            1.50           1.69
+#> 3 TRUE   FALSE           0.636           1.45           2.26
 \end{verbatim}
 
 \hypertarget{sample-weights}{%
@@ -732,13 +728,13 @@ and then call the function. Note that the \texttt{glm()} used internally to esti
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.799 0.576    0.224
+#> 1 0.931 0.699    0.231
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.292           1.28           2.26
+#> 1          0.977           1.40           1.82
 \end{verbatim}
 
 \hypertarget{relaxing-homoskedasticity}{%
@@ -815,13 +811,13 @@ With the data setup above, we can estimate the models.
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.930 0.596    0.335
+#> 1 0.941 0.624    0.317
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.716           1.07           1.43
+#> 1          0.503          0.901           1.30
 \end{verbatim}
 
 \hypertarget{standard-errors}{%
@@ -875,12 +871,12 @@ The output of a call to \texttt{pstratreg\_se} is a data frame containing estima
 #> # A tibble: 6 x 5
 #>   estimand       estimate     se  ci.min ci.max
 #>   <chr>             <dbl>  <dbl>   <dbl>  <dbl>
-#> 1 effect_m         0.237  0.0826  0.0754  0.399
-#> 2 mhat0            0.583  0.0677  0.450   0.716
-#> 3 mhat0_trunc      0.583  0.0677  0.450   0.716
-#> 4 mhat1            0.820  0.0533  0.716   0.925
-#> 5 mhat1_trunc      0.820  0.0533  0.716   0.925
-#> 6 effect_y_lower   0.0249 0.380  -0.719   0.769
+#> 1 effect_m          0.134 0.0867 -0.0359  0.304
+#> 2 mhat0             0.652 0.0592  0.536   0.768
+#> 3 mhat0_trunc       0.652 0.0592  0.536   0.768
+#> 4 mhat1             0.786 0.0661  0.656   0.915
+#> 5 mhat1_trunc       0.786 0.0661  0.656   0.915
+#> 6 effect_y_lower    0.376 0.256  -0.126   0.877
 \end{verbatim}
 
 See the end of this page for a glossary of estimand terms in the output.

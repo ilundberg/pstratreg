@@ -71,11 +71,11 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.875 0.692    0.183
+#> 1 0.835 0.751   0.0844
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.570          0.833           1.10
+#> 1           1.01           1.27           1.54
 ```

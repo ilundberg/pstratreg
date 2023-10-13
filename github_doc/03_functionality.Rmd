@@ -6,7 +6,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Package functionality
+# Basic functionality
 
 This page illustrates the basic functionality of the `pstratreg` function. This function conducts parametric principal stratification analysis to estimate average causal effect among the always-valid subgroup whose outcome would exist in either treatment condition.
 

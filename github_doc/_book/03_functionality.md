@@ -4,7 +4,7 @@ output: html_document
 
 
 
-# Package functionality
+# Basic functionality
 
 This page illustrates the basic functionality of the `pstratreg` function. This function conducts parametric principal stratification analysis to estimate average causal effect among the always-valid subgroup whose outcome would exist in either treatment condition.
 
@@ -41,12 +41,12 @@ data <- pstratreg_sim(n = 100)
 
 
 ```
-#>            x     a    m          y
-#> 1 -0.7538333 FALSE TRUE -0.0399594
-#> 2  0.8723765 FALSE TRUE  2.0095221
-#> 3 -0.2098973 FALSE TRUE -0.7560401
-#> 4  0.2649635  TRUE TRUE  0.8823682
-#> 5  0.8949594 FALSE TRUE -0.2285640
+#>            x     a     m        y
+#> 1  0.6226574  TRUE  TRUE 1.241466
+#> 2  1.2984864  TRUE  TRUE 3.317720
+#> 3 -0.1933131 FALSE  TRUE 1.367128
+#> 4  0.6308143  TRUE  TRUE 2.207222
+#> 5 -1.4314411 FALSE FALSE       NA
 ```
     
 ## The `pstratreg` function
@@ -69,13 +69,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.630 0.668  -0.0387
+#> 1 0.907 0.764    0.143
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1         -0.372          0.276          0.924
+#> 1          0.584          0.994           1.40
 ```
 
 ## Positive monotonicity
@@ -97,8 +97,6 @@ result <- pstratreg(
   treatment_name = "a",
   monotonicity_positive = TRUE
 )
-#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 55 % of cases
-#> Forcing mhat1_trunc = mhat0_trunc at midpoint of estimates for those
 ```
 
 ```
@@ -106,13 +104,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.630 0.668  -0.0387
+#> 1 0.907 0.764    0.143
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.235          0.297          0.367
+#> 1          0.815          0.997           1.21
 ```
 
 ## Negative monotonicity
@@ -130,10 +128,8 @@ result <- pstratreg(
   treatment_name = "a",
   monotonicity_negative = TRUE
 )
-#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 45 % of cases
+#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 100 % of cases
 #> Forcing mhat1_trunc = mhat0_trunc at midpoint of estimates for those
-#> Warning in pstratreg(formula_y = formula(y ~ x * a),
-#> formula_m = formula(m ~ : Recoding 52 % of p_s to sum to 1
 ```
 
 ```
@@ -141,13 +137,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.630 0.668  -0.0387
+#> 1 0.907 0.764    0.143
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.210          0.294          0.374
+#> 1           1.00           1.00           1.00
 ```
 
 ## Aggregate in subgroups
@@ -163,13 +159,13 @@ data_with_groups <- data %>%
 ```
 
 ```
-#>            x     a    m          y group1 group2
-#> 1 -0.7538333 FALSE TRUE -0.0399594   TRUE  FALSE
-#> 2  0.8723765 FALSE TRUE  2.0095221  FALSE   TRUE
-#> 3 -0.2098973 FALSE TRUE -0.7560401  FALSE  FALSE
-#> 4  0.2649635  TRUE TRUE  0.8823682  FALSE  FALSE
-#> 5  0.8949594 FALSE TRUE -0.2285640  FALSE   TRUE
-#> 6  0.1491256 FALSE TRUE  0.6851299  FALSE  FALSE
+#>            x     a     m        y group1 group2
+#> 1  0.6226574  TRUE  TRUE 1.241466  FALSE   TRUE
+#> 2  1.2984864  TRUE  TRUE 3.317720  FALSE   TRUE
+#> 3 -0.1933131 FALSE  TRUE 1.367128  FALSE  FALSE
+#> 4  0.6308143  TRUE  TRUE 2.207222  FALSE   TRUE
+#> 5 -1.4314411 FALSE FALSE       NA   TRUE  FALSE
+#> 6  1.5281387  TRUE  TRUE 3.781825  FALSE   TRUE
 ```
 
 and then we apply the function to estimate within those groups.
@@ -189,17 +185,17 @@ result <- pstratreg(
 #> # A tibble: 3 × 5
 #>   group1 group2 mhat1 mhat0 effect_m
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.764 0.737   0.0266
-#> 2 FALSE  TRUE   0.942 0.869   0.0728
-#> 3 TRUE   FALSE  0.360 0.510  -0.151 
+#> 1 FALSE  FALSE  0.916 0.799   0.117 
+#> 2 FALSE  TRUE   0.955 0.923   0.0316
+#> 3 TRUE   FALSE  0.841 0.542   0.299 
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 3 × 5
 #>   group1 group2 effect_y_lower effect_y_naive effect_y_upper
 #>   <lgl>  <lgl>           <dbl>          <dbl>          <dbl>
-#> 1 FALSE  FALSE         -0.364           0.293          0.950
-#> 2 FALSE  TRUE          -0.0873          0.200          0.486
-#> 3 TRUE   FALSE         -0.904           0.377          1.66
+#> 1 FALSE  FALSE           0.589          1.01            1.44
+#> 2 FALSE  TRUE            0.715          0.924           1.13
+#> 3 TRUE   FALSE           0.302          1.10            1.90
 ```
 
 ## Sample weights
@@ -232,11 +228,11 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.619 0.714  -0.0956
+#> 1 0.912 0.767    0.146
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1         -0.536         0.0321          0.601
+#> 1          0.687           1.08           1.47
 ```
