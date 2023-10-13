@@ -1,0 +1,171 @@
+---
+output: html_document
+---
+
+
+
+
+```r
+library(tidyverse)
+library(pstratreg)
+```
+
+# The big idea
+
+Average causal effects are undefined when some outcomes do not exist. For example, consider the two people below who were eligible for a job training intervention.
+
+| Person | Wage with job training | Wage without job training | Causal effect |
+| :-: |:-:|:-:|:-:|
+| Javier | \$30 | \$20 | \$30-\$20=\$10
+| William | \$26 | ?? | \$30-??=??
+| **Average** | **\$28** | **??** | **??** |
+
+A social scientist might study the average causal effect of the intervention on future hourly wages. But without job training, William would not be employed at all. His wage ?? does not exist. As a result, the average causal effect does not exist. Principal stratification is a method to estimate average causal effects in the subpopulation that excludes people like William, for whom the effect is undefined.
+
+This page is a tutorial on the ideas behind principal stratification. See the next page for use of package functionality.
+
+## Defining principal strata
+
+Let $M_i$ be a binary mediator (e.g., employment) that determines whether an outcome exists for unti $i$. Let $Y_i$ be the outcome, where $Y$ is undefined when $M = 0$. Let $\{M_i^1,M_i^0\}$ and $\{Y_i^1,Y_i^0\}$ be the potential values that the mediator and outcome would take for unit $i$ under job training and under no job training. The table above gave values for $\{Y_i^1,Y_i^0\}$.
+
+Define four **principal strata** of units by the effect that the intervention has on the mediator value
+
+| Stratum | Math | English |
+| :-: |:-:|:-:|
+| $S_i = \text{Always}$ | $M_i^1 = M_i^0 = 1$ | Always employed, regardless of the intervention | 
+| $S_i = \text{Induced}$ | $M_i^1 > M_i^0$ | Induced into employment by the intervention | 
+| $S_i = \text{Blocked}$ | $M_i^1 < M_i^0$ | Blocked from employment by the intervention | 
+| $S_i = \text{Never}$ | $M_i^1 = M_i^0 = 0$ | Never employed, regardless of the intervention |
+
+In our example, Javier is a member of the always stratum and William is a member of the induced stratum.
+
+## Target population: The always stratum
+
+The average causal effect $E(Y^1 - Y^0)$ is only defined in the "Always" stratum.
+
+- in the induced stratum, $Y^0$ is undefined, so the effect is $Y^1 - ??$
+- in the blocked stratum, $Y^1$ is undefined, so the effect is $?? - Y^0$
+- in the never stratum, both are undefined, so the effect is $?? - ??$
+
+Our causal estimand is therefore the average causal effect in the always stratum.
+
+$$E(Y^1 - Y^0 \mid S = \text{Always})$$
+
+## Fundamental problem: Strata are latent
+
+Suppose William received job training. We would observe his \$26 wage. We would not know that he would not have been employed without job training. If William received job training, then in the observed data we would know that he was either in the always stratum or the induced stratum.
+
+What can be observed is the treatment value $D_i$ and the mediator value $M_i$. Each combination of these values is a mixture of two principal strata.
+
+| | $D_i = 1$ | $D_i = 0$ |
+| :-: | :-: | :-: |
+| $M_i = 1$ | Always and Induced | Always and Blocked |
+| $M_i = 0$ | Never and Blocked | Never and Induced |
+
+## Solution step 1: Make an assumption
+
+Assumptions can simplify the problem, and can be plausible in some settings. We focus on two versions of one assumption.
+
+| Assumption | Math | English |
+| :-: | :-: | :-: |
+| Positive monotonicity | $M_i^1 \geq M_i^0$ | No one is blocked |
+| Negative monotonicity | $M_i^1\leq M_i^0$ | No one is induced |
+
+In our example, the positive monotonicity assumption may be credible: job training is unlikely to block anyone from employment. In other settings, the negative monotonicity assumption is credible. If the treatment were having a criminal record on one's resume, that treatment might block employment but would be unlikely to induce employment.
+
+Under positive monotonicity, some latent strata become observable.
+
+| | $D_i = 1$ | $D_i = 0$ |
+| :-: | :-: | :-: |
+| $M_i = 1$ | Always and Induced | Always |
+| $M_i = 0$ | Never | Never and Induced |
+
+For example, suppose that Javier was assigned to no job training, and we observed that he was employed. Under positive monotonicity, we would know that Javier was in the always stratum because he was employed without job training, and thus surely would have been employed with job training.
+
+## Solution step 2: Bound the average effect in the always stratum
+
+Suppose we assume positive monotonicity, and we observe data where four people have been randomized to each treatment condition.
+
+In the no-job-training condition, we observe the following four people
+
+| Person | Treatment | Wage | Stratum |
+| :-: | :-: | :-: | :-: |
+| Jamal | No job training | \$20 | Always |
+| Sandra | No job training | \$16 | Always |
+| Oscar | No job training | ?? | Never or Induced |
+| Nancy | No job training | ?? | Never or Induced |
+
+The stratum column is sometimes known by assumption: Jamal and Sandra were employed despite no job training, so they surely would have been employed in a counterfactual world with job training (by positive monotonicity). Oscar and Nancy might or might not have been employed in a counterfactual world where they received job training.
+
+Four people were randomized to the treatment: job training
+
+| Person | Treatment | Wage | Stratum |
+| :-: | :-: | :-: | :-: |
+| Nia | Job training | \$40 | Always or Induced
+| Steven | Job training | \$32 | Always or Induced
+| Maya | Job training | \$29 | Always or Induced
+| Hugo | Job training | \$25 | Always or Induced
+
+The stratum column for the four treated people is always unknown, because under positive monotonicity they might or might not have been employed despite no job training.
+
+By comparing the frequency of ?? in the tables, we can estimate that job training reduces employment by 50 percentage points. This tells us the size of the induced stratum.
+
+$$\hat{P}(S = \text{Induced}) = 0.5$$
+
+Because all those receiving job training were employed, our data also suggest that the never-employed stratum is empty.
+
+$$\hat{P}(S = \text{Never}) = 0$$
+
+Thus, in our example we estimate that 50\% of people are always employed and 50\% would be induced into employment if exposed to job training. Thus half of \{Nia, Steven, Maya, Hugo\} are always-employed.
+
+But which half? This is impossible to know. We therefore **bound** the expected outcome under treatment.
+
+- for an *upper bound*, assume the highest-valued half of the treated units are the always-employed ones
+     - Nia and Steven are always employed
+     - Maya and Hugo are induced
+     - $\hat{E}_\text{Upper}(Y^1\mid S = \text{Always}) = \frac{32+40}{2} = \$36$
+- for a *lower bound*, assume the lowest-valued half of the treated units are the always-employed ones
+     - Nia and Steven are induced
+     - Maya and Hugo are always employed
+     - $\hat{E}_\text{Lower}(Y^1\mid S = \text{Always}) = \frac{25+29}{2} = \$27$
+
+Because under positive monotonicity all untreated individuals must be always-employed, we point estimate the outcome under control
+
+$$\hat{E}(Y^0\mid S = \text{Always}) = \$18$$
+
+The difference tells us that the average causal effect of job training on the wages of the always employed is between \$27 - \$18 = \$9 and \$36 - \$18 = \$18.
+
+## Regression bounds
+
+In observational causal inference, we may adjust for a vector $\vec{X}$ of confounding variables.
+
+- when $\vec{X}$ can take only a few discrete values, one can carry out principal stratification as above within each stratum of $\vec{X}$
+- when $\vec{X}$ can take many values, it is possible that each vector value $\vec{X}_i$ is unique
+
+In the latter setting, we need model-based principal stratification.
+
+1) Model the mediator
+     - Fit a model for the mediator $M$
+     - Estimate the probability of each stratum for each unit
+2) Model the outcome
+     - Fit a model for the outcome $Y\mid A = 1, M = 1, \vec{X}$
+          - Example: Model the distribution of wages for employed job training recipients
+     - Fit a model for the outcome $Y\mid A = 0, M = 1, \vec{X}$
+          - Example: Model the distribution of wages for employed job training recipients
+     - Bound by assuming that the proportion induced (from 1) is the upper or lower portion conditional on covariates
+
+### Upper bound: Left - Right
+
+![](assets/teach_jobtrain_upper.png){ width=40% }
+![](assets/teach_jobtrain_control.png){ width=40% }
+
+### Lower bound: Left - Right
+
+![](assets/teach_jobtrain_lower.png){ width=40% }
+![](assets/teach_jobtrain_control.png){ width=40% }
+
+
+     
+     
+
+     
