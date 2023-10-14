@@ -239,8 +239,8 @@ pstratreg <- function(
         midpoint[violation_cases]
     }
     p_s <- data.frame(
-      never_survive = 1 - mhat1_trunc,
-      always_survive = mhat0_trunc,
+      never_survive = 1 - mhat0_trunc,
+      always_survive = mhat1_trunc,
       complier = 0,
       defier = mhat0_trunc - mhat1_trunc
     )
