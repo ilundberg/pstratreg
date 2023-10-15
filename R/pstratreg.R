@@ -297,7 +297,9 @@ pstratreg <- function(
       formula_resid_character <- as.character(formula_y)
       formula_resid_character[2] <- "resid_sq"
       formula_resid <- stats::formula(paste(formula_resid_character[c(2,1,3)], collapse = " "))
-      data$resid_sq <- (data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2
+      # note: the .001 is to help with numerical issues near log(0)
+      # adding the .001 as here could create problems if a user had data on a very small scale
+      data$resid_sq <- .001 + (data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2
       fit_sq_resid <- stats::glm(formula_resid,
                               data = data[valid_outcome,],
                               weights = sample_weight_variable,
