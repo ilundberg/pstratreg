@@ -289,19 +289,20 @@ pstratreg <- function(
   } else if (family_y$family == "gaussian") {
 
     if (homoskedastic) {
+      fit_sq_resid <- NULL
       resid_sd <- rep(stats::sd(fit_y$residuals), nrow(data))
     } else {
       # Fit a variance function regression for outcome residuals
-      # Note: This is a simple version. An alternative would be a gamma model with log link
-      # that iterates with fit_y as in Western & Bloome 2009
+      # See two-step estimator in Western and Bloome (2009)
       formula_resid_character <- as.character(formula_y)
-      formula_resid_character[2] <- "log_resid_sq"
+      formula_resid_character[2] <- "resid_sq"
       formula_resid <- stats::formula(paste(formula_resid_character[c(2,1,3)], collapse = " "))
-      data$log_resid_sq <- log((data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2)
-      fit_resid <- stats::lm(formula_resid,
-                             data = data[valid_outcome,],
-                             weights = sample_weight_variable)
-      resid_sd <- sqrt(exp(stats::predict(fit_resid, newdata = data)))
+      data$resid_sq <- (data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2
+      fit_sq_resid <- stats::glm(formula_resid,
+                              data = data[valid_outcome,],
+                              weights = sample_weight_variable,
+                              family = stats::Gamma(link = "log"))
+      resid_sd <- sqrt(stats::predict(fit_sq_resid, newdata = data, type = "response"))
     }
 
     # Make many draws from a standard normal residual
@@ -412,6 +413,7 @@ pstratreg <- function(
     estimates_m = estimates_m,
     fit_m = fit_m,
     fit_y = fit_y,
+    fit_sq_resid = fit_sq_resid,
     call = call
   )
   class(to_return) <- "pstratreg"
