@@ -17,27 +17,26 @@ While commonly assumed in Ordinary Least Squares, homoskedasticity is an assumpt
 We begin with an ordinary least squares outcome model, as in the homoskedastic case,
 
 $$\begin{aligned}
-\hat{E}(Y\mid \vec{X},A,M = 1) = \hat\alpha + A\hat\beta  + \vec{X}'\hat{\vec\gamma} + A\vec{X}'\hat{\vec\eta}
+E(Y\mid \vec{X},A,M = 1) =\alpha + A\hat\beta  + \vec{X}\vec\gamma + A\vec{X}'\vec\eta
 \end{aligned}$$
 
 where $A$ is a binary treatment, $\vec{X}$ is a vector of measured confounders, and $M = 1$ is the mediator indicating that the outcome is valid. Let $\hat{Y}_i$ be the predicted value for each unit $i$ from this model.
 
 ## Model the conditional variance
 
-For each unit, we then calculate the squared residual, which we can conceptualize as the unit-specific contribution to the log conditional variance.
+We next allow the conditional variance of $Y$ to vary as a function of $A$ and $\vec{X}$. We first define the squared residual
 
-$$\hat\epsilon_i^2 = \left(Y_i - \hat{Y}_i\right)^2$$
-
-To relax homoskedasticity, we estimate a second model for the log squared residuals, where the log is used to ensure that these are on an unbounded scale.
+$$\hat\epsilon^2 = \left(Y - \hat{Y}\right)^2$$
+Under the assumption that $\hat\epsilon$ is normally distributed, the squared residual $\hat\epsilon^2$ follows a Gamma distribution with mean equal to the conditional variance $\sigma^2(\vec{X},A,M=1)$. We therefore model $\hat\epsilon^2$ by a Gamma GLM with a log link function, using a parametric linear predictor such as the one below.
 
 $$\begin{aligned}
-\hat{E}(\log(\hat\epsilon_i^2)\mid \vec{X},A,M = 1) = \hat\lambda + A\hat\delta  + \vec{X}'\hat{\vec\nu} + A\vec{X}'\hat{\vec\eta}
+\log(\sigma^2(\vec{X},A,M=1)) = \lambda + A\delta  + \vec{X}'\vec\nu + A\vec{X}'\vec\omega
 \end{aligned}$$
 
 Predictions from this model (exponentiated) are estimates of the conditional variance, $\hat{V}(Y\mid \vec{X},A,M=1)$ at the observed predictors for each unit. We make predictions under the treatment and control conditions.
 
 $$\begin{aligned}
-\hat{V}(Y\mid \vec{X},A = 1,M=1) &= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\eta}\right)\right] \\
+\hat{V}(Y\mid \vec{X},A = 1,M=1) &= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\omega}\right)\right] \\
 \hat{V}(Y\mid \vec{X},A = 0,M=1) &= \text{exp}\left[\hat\lambda + \vec{X}'\hat{\vec\nu}\right] \\
 \end{aligned}$$
 
@@ -71,11 +70,40 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.835 0.751   0.0844
+#> 1 0.895 0.759    0.136
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1           1.01           1.27           1.54
+#> 1       -0.00557          0.516           1.04
+```
+
+Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for $Y$, which might be done if the model formula involves many parameters and you see errors from the internal `glm()` call about convergence for the variance regression.
+
+
+```r
+result <- pstratreg(
+  formula_y = formula(y ~ x*a),
+  formula_m = formula(m ~ x*a),
+  formula_sq_resid = formula(~ x + a),
+  data = data,
+  treatment_name = "a",
+  homoskedastic = FALSE
+)
+```
+
+
+```
+#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> # A tibble: 1 × 3
+#>   mhat1 mhat0 effect_m
+#>   <dbl> <dbl>    <dbl>
+#> 1 0.895 0.759    0.136
+#> 
+#> Effect on outcome among those who would have a valid outcome regardless of treatment
+#> # A tibble: 1 × 3
+#>   effect_y_lower effect_y_naive effect_y_upper
+#>            <dbl>          <dbl>          <dbl>
+#> 1        -0.0133          0.516           1.05
 ```

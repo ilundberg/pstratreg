@@ -72,7 +72,7 @@
 </h2>
 <p>We begin with an ordinary least squares outcome model, as in the homoskedastic case,</p>
 <p><span class="math display">\[\begin{aligned}
-\hat{E}(Y\mid \vec{X},A,M = 1) = \hat\alpha + A\hat\beta  + \vec{X}'\hat{\vec\gamma} + A\vec{X}'\hat{\vec\eta}
+E(Y\mid \vec{X},A,M = 1) =\alpha + A\hat\beta  + \vec{X}\vec\gamma + A\vec{X}'\vec\eta
 \end{aligned}\]</span></p>
 <p>where <span class="math inline">\(A\)</span> is a binary treatment, <span class="math inline">\(\vec{X}\)</span> is a vector of measured confounders, and <span class="math inline">\(M = 1\)</span> is the mediator indicating that the outcome is valid. Let <span class="math inline">\(\hat{Y}_i\)</span> be the predicted value for each unit <span class="math inline">\(i\)</span> from this model.</p>
 </div>
@@ -80,15 +80,15 @@
 <h2>
 <span class="header-section-number">4.2</span> Model the conditional variance<a class="anchor" aria-label="anchor" href="#model-the-conditional-variance"><i class="fas fa-link"></i></a>
 </h2>
-<p>For each unit, we then calculate the squared residual, which we can conceptualize as the unit-specific contribution to the log conditional variance.</p>
-<p><span class="math display">\[\hat\epsilon_i^2 = \left(Y_i - \hat{Y}_i\right)^2\]</span></p>
-<p>To relax homoskedasticity, we estimate a second model for the log squared residuals, where the log is used to ensure that these are on an unbounded scale.</p>
+<p>We next allow the conditional variance of <span class="math inline">\(Y\)</span> to vary as a function of <span class="math inline">\(A\)</span> and <span class="math inline">\(\vec{X}\)</span>. We first define the squared residual</p>
+<p><span class="math display">\[\hat\epsilon^2 = \left(Y - \hat{Y}\right)^2\]</span>
+Under the assumption that <span class="math inline">\(\hat\epsilon\)</span> is normally distributed, the squared residual <span class="math inline">\(\hat\epsilon^2\)</span> follows a Gamma distribution with mean equal to the conditional variance <span class="math inline">\(\sigma^2(\vec{X},A,M=1)\)</span>. We therefore model <span class="math inline">\(\hat\epsilon^2\)</span> by a Gamma GLM with a log link function, using a parametric linear predictor such as the one below.</p>
 <p><span class="math display">\[\begin{aligned}
-\hat{E}(\log(\hat\epsilon_i^2)\mid \vec{X},A,M = 1) = \hat\lambda + A\hat\delta  + \vec{X}'\hat{\vec\nu} + A\vec{X}'\hat{\vec\eta}
+\log(\sigma^2(\vec{X},A,M=1)) = \lambda + A\delta  + \vec{X}'\vec\nu + A\vec{X}'\vec\omega
 \end{aligned}\]</span></p>
 <p>Predictions from this model (exponentiated) are estimates of the conditional variance, <span class="math inline">\(\hat{V}(Y\mid \vec{X},A,M=1)\)</span> at the observed predictors for each unit. We make predictions under the treatment and control conditions.</p>
 <p><span class="math display">\[\begin{aligned}
-\hat{V}(Y\mid \vec{X},A = 1,M=1) &amp;= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\eta}\right)\right] \\
+\hat{V}(Y\mid \vec{X},A = 1,M=1) &amp;= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\omega}\right)\right] \\
 \hat{V}(Y\mid \vec{X},A = 0,M=1) &amp;= \text{exp}\left[\hat\lambda + \vec{X}'\hat{\vec\nu}\right] \\
 \end{aligned}\]</span></p>
 </div>
@@ -114,13 +114,34 @@
 #&gt; # A tibble: 1 × 3
 #&gt;   mhat1 mhat0 effect_m
 #&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 0.842 0.691    0.150
+#&gt; 1 0.711 0.639   0.0722
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 1 × 3
 #&gt;   effect_y_lower effect_y_naive effect_y_upper
 #&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1          0.654           1.00           1.35</code></pre>
+#&gt; 1          0.732           1.30           1.87</code></pre>
+<p>Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for <span class="math inline">\(Y\)</span>, which might be done if the model formula involves many parameters and you see errors from the internal <code><a href="https://rdrr.io/r/stats/glm.html">glm()</a></code> call about convergence for the variance regression.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg.html">pstratreg</a></span><span class="op">(</span></span>
+<span>  formula_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">*</span><span class="va">a</span><span class="op">)</span>,</span>
+<span>  formula_m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">m</span> <span class="op">~</span> <span class="va">x</span><span class="op">*</span><span class="va">a</span><span class="op">)</span>,</span>
+<span>  formula_sq_resid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">a</span><span class="op">)</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  treatment_name <span class="op">=</span> <span class="st">"a"</span>,</span>
+<span>  homoskedastic <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code>#&gt; Effect on mediator, where mediator indicates whether outcome will be valid
+#&gt; # A tibble: 1 × 3
+#&gt;   mhat1 mhat0 effect_m
+#&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 0.711 0.639   0.0722
+#&gt; 
+#&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
+#&gt; # A tibble: 1 × 3
+#&gt;   effect_y_lower effect_y_naive effect_y_upper
+#&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+#&gt; 1          0.713           1.30           1.89</code></pre>
 
 </div>
 </div>
@@ -151,7 +172,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-13.</p>
+    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

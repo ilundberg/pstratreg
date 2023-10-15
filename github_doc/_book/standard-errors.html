@@ -64,14 +64,14 @@
 <p>Appropriate standard errors depend on application-specific knowledge about how the data were generated. For example, appropriate standard errors are not the same for sampling variability in simple random samples, sampling variability in complex samples, and finite-sample inference with variation from random treatment assignment.</p>
 <p>For the particular case of simple random samples, the package supports standard error estimation by the nonparametric bootstrap and 95% confidence intervals by a Normal approximation using the estimated standard error.</p>
 <p>We first set up the environment</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pstratreg</span><span class="op">)</span></span></code></pre></div>
 <p>and simulate data</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg_sim.html">pstratreg_sim</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p>and produce point estimates with a call to <code>pstratreg</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pstratreg.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg.html">pstratreg</a></span><span class="op">(</span></span>
 <span>  formula_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">*</span><span class="va">a</span><span class="op">)</span>,</span>
 <span>  formula_m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">m</span> <span class="op">~</span> <span class="va">x</span><span class="op">*</span><span class="va">a</span><span class="op">)</span>,</span>
@@ -79,25 +79,25 @@
 <span>  treatment_name <span class="op">=</span> <span class="st">"a"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>To estimate standard errors and confidence intervals, hand the output of the call to <code>pstratreg</code> to the <code>pstratreg_se</code> function, optionally specifying the number <code>r</code> of bootstrap samples.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_with_se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg_se.html">pstratreg_se</a></span><span class="op">(</span><span class="va">pstratreg.out</span>, r <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p>The output of a call to <code>pstratreg_se</code> is a data frame containing estimates and inferential quantities.</p>
 <pre><code>#&gt; # A tibble: 6 × 5
-#&gt;   estimand       estimate     se  ci.min ci.max
-#&gt;   &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-#&gt; 1 effect_m          0.154 0.0875 -0.0178  0.325
-#&gt; 2 mhat0             0.717 0.0548  0.610   0.825
-#&gt; 3 mhat0_trunc       0.717 0.0548  0.610   0.825
-#&gt; 4 mhat1             0.871 0.0750  0.724   1.02 
-#&gt; 5 mhat1_trunc       0.871 0.0750  0.724   1.02 
-#&gt; 6 effect_y_lower    0.338 0.256  -0.163   0.840</code></pre>
+#&gt;   estimand       estimate     se ci.min ci.max
+#&gt;   &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt; 1 effect_m          0.119 0.115  -0.107  0.345
+#&gt; 2 effect_y_lower    0.335 0.281  -0.217  0.886
+#&gt; 3 effect_y_naive    0.931 0.261   0.418  1.44 
+#&gt; 4 effect_y_upper    1.53  0.283   0.972  2.08 
+#&gt; 5 mhat0             0.721 0.0670  0.589  0.852
+#&gt; 6 mhat0_trunc       0.721 0.0670  0.589  0.852</code></pre>
 <p>See the end of this page for a glossary of estimand terms in the output.</p>
 <div id="visualize-the-result" class="section level2" number="5.1">
 <h2>
 <span class="header-section-number">5.1</span> Visualize the result<a class="anchor" aria-label="anchor" href="#visualize-the-result"><i class="fas fa-link"></i></a>
 </h2>
 <p>One way to use this output to create visualizations using <code>ggplot</code>. For example, the code below visualizes bounded effects on the outcome.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_with_se</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">estimand</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"effect_y_lower"</span>,<span class="st">"effect_y_naive"</span>,<span class="st">"effect_y_upper"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>estimand_label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
@@ -238,7 +238,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-13.</p>
+    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-15.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

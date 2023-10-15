@@ -120,7 +120,7 @@
 
 \title{pstratreg: An R package}
 \author{Ian Lundberg and Soonhong Cho}
-\date{2023-10-13}
+\date{2023-10-15}
 
 \begin{document}
 \maketitle
@@ -527,12 +527,12 @@ The data has four variables
 \end{Shaded}
 
 \begin{verbatim}
-#>             x     a    m           y
-#> 1  0.64963549  TRUE TRUE  4.14526998
-#> 2 -0.09736403 FALSE TRUE  0.11223486
-#> 3  0.42887715 FALSE TRUE -0.55115508
-#> 4 -0.48915985  TRUE TRUE  0.03956927
-#> 5  0.77785241 FALSE TRUE  0.76739211
+#>             x     a    m          y
+#> 1  1.08580976 FALSE TRUE  0.4061619
+#> 2  0.82524879  TRUE TRUE  0.4753600
+#> 3  0.79154630  TRUE TRUE  1.5573949
+#> 4 -0.04058548 FALSE TRUE -0.8106432
+#> 5  1.42568260  TRUE TRUE  2.8584814
 \end{verbatim}
 
 \hypertarget{the-pstratreg-function}{%
@@ -556,13 +556,13 @@ The call below runs a principal stratification regression analysis with default 
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.942 0.685    0.257
+#> 1 0.886 0.581    0.304
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1           1.05           1.47           1.89
+#> 1          0.357           1.30           2.25
 \end{verbatim}
 
 \hypertarget{positive-monotonicity}{%
@@ -593,13 +593,13 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.942 0.685    0.257
+#> 1 0.886 0.581    0.304
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1           1.12           1.47           1.82
+#> 1          0.699           1.30           1.91
 \end{verbatim}
 
 \hypertarget{negative-monotonicity}{%
@@ -628,13 +628,13 @@ In this particular simulation, negative monotonicity does not hold and you see b
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.942 0.685    0.257
+#> 1 0.886 0.581    0.304
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1           1.47           1.47           1.47
+#> 1           1.30           1.30           1.30
 \end{verbatim}
 
 \hypertarget{aggregate-in-subgroups}{%
@@ -653,13 +653,13 @@ First we create some groups for illustration
 \end{Shaded}
 
 \begin{verbatim}
-#>             x     a    m           y group1 group2
-#> 1  0.64963549  TRUE TRUE  4.14526998  FALSE   TRUE
-#> 2 -0.09736403 FALSE TRUE  0.11223486  FALSE  FALSE
-#> 3  0.42887715 FALSE TRUE -0.55115508  FALSE  FALSE
-#> 4 -0.48915985  TRUE TRUE  0.03956927  FALSE  FALSE
-#> 5  0.77785241 FALSE TRUE  0.76739211  FALSE   TRUE
-#> 6  0.71949258  TRUE TRUE  1.88018061  FALSE   TRUE
+#>             x     a     m          y group1 group2
+#> 1  1.08580976 FALSE  TRUE  0.4061619  FALSE   TRUE
+#> 2  0.82524879  TRUE  TRUE  0.4753600  FALSE   TRUE
+#> 3  0.79154630  TRUE  TRUE  1.5573949  FALSE   TRUE
+#> 4 -0.04058548 FALSE  TRUE -0.8106432  FALSE  FALSE
+#> 5  1.42568260  TRUE  TRUE  2.8584814  FALSE   TRUE
+#> 6 -0.39428800 FALSE FALSE         NA  FALSE  FALSE
 \end{verbatim}
 
 and then we apply the function to estimate within those groups.
@@ -681,17 +681,17 @@ and then we apply the function to estimate within those groups.
 #> # A tibble: 3 x 5
 #>   group1 group2 mhat1 mhat0 effect_m
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.981 0.719    0.262
-#> 2 FALSE  TRUE   0.998 0.875    0.123
-#> 3 TRUE   FALSE  0.847 0.487    0.360
+#> 1 FALSE  FALSE  0.897 0.605    0.292
+#> 2 FALSE  TRUE   0.934 0.763    0.171
+#> 3 TRUE   FALSE  0.843 0.435    0.408
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 3 x 5
 #>   group1 group2 effect_y_lower effect_y_naive effect_y_upper
 #>   <lgl>  <lgl>           <dbl>          <dbl>          <dbl>
-#> 1 FALSE  FALSE           1.06            1.47           1.88
-#> 2 FALSE  TRUE            1.30            1.50           1.69
-#> 3 TRUE   FALSE           0.636           1.45           2.26
+#> 1 FALSE  FALSE          0.326            1.29           2.26
+#> 2 FALSE  TRUE           0.719            1.34           1.95
+#> 3 TRUE   FALSE         -0.0773           1.26           2.60
 \end{verbatim}
 
 \hypertarget{sample-weights}{%
@@ -728,13 +728,13 @@ and then call the function. Note that the \texttt{glm()} used internally to esti
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.931 0.699    0.231
+#> 1 0.928 0.571    0.357
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.977           1.40           1.82
+#> 1          0.560           1.46           2.35
 \end{verbatim}
 
 \hypertarget{relaxing-homoskedasticity}{%
@@ -754,7 +754,7 @@ While commonly assumed in Ordinary Least Squares, homoskedasticity is an assumpt
 We begin with an ordinary least squares outcome model, as in the homoskedastic case,
 
 \[\begin{aligned}
-\hat{E}(Y\mid \vec{X},A,M = 1) = \hat\alpha + A\hat\beta  + \vec{X}'\hat{\vec\gamma} + A\vec{X}'\hat{\vec\eta}
+E(Y\mid \vec{X},A,M = 1) =\alpha + A\hat\beta  + \vec{X}\vec\gamma + A\vec{X}'\vec\eta
 \end{aligned}\]
 
 where \(A\) is a binary treatment, \(\vec{X}\) is a vector of measured confounders, and \(M = 1\) is the mediator indicating that the outcome is valid. Let \(\hat{Y}_i\) be the predicted value for each unit \(i\) from this model.
@@ -762,20 +762,19 @@ where \(A\) is a binary treatment, \(\vec{X}\) is a vector of measured confounde
 \hypertarget{model-the-conditional-variance}{%
 \section{Model the conditional variance}\label{model-the-conditional-variance}}
 
-For each unit, we then calculate the squared residual, which we can conceptualize as the unit-specific contribution to the log conditional variance.
+We next allow the conditional variance of \(Y\) to vary as a function of \(A\) and \(\vec{X}\). We first define the squared residual
 
-\[\hat\epsilon_i^2 = \left(Y_i - \hat{Y}_i\right)^2\]
-
-To relax homoskedasticity, we estimate a second model for the log squared residuals, where the log is used to ensure that these are on an unbounded scale.
+\[\hat\epsilon^2 = \left(Y - \hat{Y}\right)^2\]
+Under the assumption that \(\hat\epsilon\) is normally distributed, the squared residual \(\hat\epsilon^2\) follows a Gamma distribution with mean equal to the conditional variance \(\sigma^2(\vec{X},A,M=1)\). We therefore model \(\hat\epsilon^2\) by a Gamma GLM with a log link function, using a parametric linear predictor such as the one below.
 
 \[\begin{aligned}
-\hat{E}(\log(\hat\epsilon_i^2)\mid \vec{X},A,M = 1) = \hat\lambda + A\hat\delta  + \vec{X}'\hat{\vec\nu} + A\vec{X}'\hat{\vec\eta}
+\log(\sigma^2(\vec{X},A,M=1)) = \lambda + A\delta  + \vec{X}'\vec\nu + A\vec{X}'\vec\omega
 \end{aligned}\]
 
 Predictions from this model (exponentiated) are estimates of the conditional variance, \(\hat{V}(Y\mid \vec{X},A,M=1)\) at the observed predictors for each unit. We make predictions under the treatment and control conditions.
 
 \[\begin{aligned}
-\hat{V}(Y\mid \vec{X},A = 1,M=1) &= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\eta}\right)\right] \\
+\hat{V}(Y\mid \vec{X},A = 1,M=1) &= \text{exp}\left[\hat\lambda + \hat\delta  + \vec{X}'\left(\hat{\vec\nu} + \hat{\vec\omega}\right)\right] \\
 \hat{V}(Y\mid \vec{X},A = 0,M=1) &= \text{exp}\left[\hat\lambda + \vec{X}'\hat{\vec\nu}\right] \\
 \end{aligned}\]
 
@@ -811,13 +810,42 @@ With the data setup above, we can estimate the models.
 #> # A tibble: 1 x 3
 #>   mhat1 mhat0 effect_m
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.941 0.624    0.317
+#> 1 0.885 0.712    0.172
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 3
 #>   effect_y_lower effect_y_naive effect_y_upper
 #>            <dbl>          <dbl>          <dbl>
-#> 1          0.503          0.901           1.30
+#> 1          0.584           1.12           1.65
+\end{verbatim}
+
+Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for \(Y\), which might be done if the model formula involves many parameters and you see errors from the internal \texttt{glm()} call about convergence for the variance regression.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
+  \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_sq\_resid =} \FunctionTok{formula}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ a),}
+  \AttributeTok{data =}\NormalTok{ data,}
+  \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
+  \AttributeTok{homoskedastic =} \ConstantTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> # A tibble: 1 x 3
+#>   mhat1 mhat0 effect_m
+#>   <dbl> <dbl>    <dbl>
+#> 1 0.885 0.712    0.172
+#> 
+#> Effect on outcome among those who would have a valid outcome regardless of treatment
+#> # A tibble: 1 x 3
+#>   effect_y_lower effect_y_naive effect_y_upper
+#>            <dbl>          <dbl>          <dbl>
+#> 1          0.571           1.12           1.66
 \end{verbatim}
 
 \hypertarget{standard-errors}{%
@@ -871,12 +899,12 @@ The output of a call to \texttt{pstratreg\_se} is a data frame containing estima
 #> # A tibble: 6 x 5
 #>   estimand       estimate     se  ci.min ci.max
 #>   <chr>             <dbl>  <dbl>   <dbl>  <dbl>
-#> 1 effect_m          0.134 0.0867 -0.0359  0.304
-#> 2 mhat0             0.652 0.0592  0.536   0.768
-#> 3 mhat0_trunc       0.652 0.0592  0.536   0.768
-#> 4 mhat1             0.786 0.0661  0.656   0.915
-#> 5 mhat1_trunc       0.786 0.0661  0.656   0.915
-#> 6 effect_y_lower    0.376 0.256  -0.126   0.877
+#> 1 effect_m         0.0219 0.0907 -0.156   0.200
+#> 2 effect_y_lower   0.615  0.353  -0.0780  1.31 
+#> 3 effect_y_naive   1.20   0.288   0.631   1.76 
+#> 4 effect_y_upper   1.78   0.318   1.15    2.40 
+#> 5 mhat0            0.733  0.0772  0.582   0.885
+#> 6 mhat0_trunc      0.733  0.0772  0.582   0.885
 \end{verbatim}
 
 See the end of this page for a glossary of estimand terms in the output.
