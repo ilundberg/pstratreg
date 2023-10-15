@@ -3,6 +3,7 @@
 #' @description Uses principal stratification and parametric models to bound the average causal effect among those who would have a valid outcome under either treatment condition
 #' @param formula_y A model formula for the outcome
 #' @param formula_m A model formula for the binary indicator for whether the outcome exists
+#' @param formula_sq_resid A model formula for the squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula.
 #' @param family_y Character family of the outcome, either \code{"gaussian"} or \code{"binomial"}
 #' @param homoskedastic A logical for whether homoskedasticity of the outcome should be assumed. If \code{FALSE}, estimates by variance function regression for log squared residuals with the same formula as in \code{formula_y}.
 #' @param data A data frame
@@ -36,6 +37,7 @@
 pstratreg <- function(
     formula_y,
     formula_m,
+    formula_sq_resid = NULL,
     family_y = "gaussian", # currently only gaussian and binomial
     homoskedastic = T, # only relevant if family_y = gaussian
     data,
@@ -51,6 +53,7 @@ pstratreg <- function(
   call <- list(
     formula_y = formula_y,
     formula_m = formula_m,
+    formula_sq_resid = formula_sq_resid,
     family_y = family_y,
     data = data,
     weights = weights,
@@ -71,6 +74,19 @@ pstratreg <- function(
   # Check that mediator and outcome have different outcomes
   if (as.character(formula_y)[2] == as.character(formula_m)[2]) {
     stop("formula_y and formula_m should have different outcomes")
+  }
+
+  # Make residual formula have the outcome sq_resid
+  if (!homoskedastic & !is.null(formula_sq_resid)) {
+    formula_sq_resid_ch <- as.character(formula_sq_resid)
+    # drop the outcome from the formula
+    if (length(formula_sq_resid_ch) == 3) {
+      formula_sq_resid_ch <- formula_sq_resid_ch[c(1,3)]
+    }
+    # make the outcome sq_resid
+    formula_sq_resid <- stats::formula(paste0(c("sq_resid",formula_sq_resid_ch),collapse = " "))
+  } else if (!homoskedastic & is.null(formula_sq_resid)) {
+    formula_sq_resid <- stats::formula(paste0(c("sq_resid",as.character(formula_y)[c(1,3)]),collapse = " "))
   }
 
   # Extract the outcome and mediator variables
@@ -294,16 +310,13 @@ pstratreg <- function(
     } else {
       # Fit a variance function regression for outcome residuals
       # See two-step estimator in Western and Bloome (2009)
-      formula_resid_character <- as.character(formula_y)
-      formula_resid_character[2] <- "resid_sq"
-      formula_resid <- stats::formula(paste(formula_resid_character[c(2,1,3)], collapse = " "))
       # note: the .001 is to help with numerical issues near log(0)
       # adding the .001 as here could create problems if a user had data on a very small scale
-      data$resid_sq <- .001 + (data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2
-      fit_sq_resid <- stats::glm(formula_resid,
-                              data = data[valid_outcome,],
-                              weights = sample_weight_variable,
-                              family = stats::Gamma(link = "log"))
+      data$sq_resid <- .001 + (data[[outcome_name]] - stats::predict(fit_y, type = "response", newdata = data)) ^ 2
+      fit_sq_resid <- stats::glm(formula_sq_resid,
+                                 data = data[valid_outcome,],
+                                 weights = sample_weight_variable,
+                                 family = stats::Gamma(link = "log"))
       resid_sd <- sqrt(stats::predict(fit_sq_resid, newdata = data, type = "response"))
     }
 

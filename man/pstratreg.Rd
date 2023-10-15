@@ -7,6 +7,7 @@
 pstratreg(
   formula_y,
   formula_m,
+  formula_sq_resid = NULL,
   family_y = "gaussian",
   homoskedastic = T,
   data,
@@ -22,6 +23,8 @@ pstratreg(
 \item{formula_y}{A model formula for the outcome}
 
 \item{formula_m}{A model formula for the binary indicator for whether the outcome exists}
+
+\item{formula_sq_resid}{A model formula for the squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula.}
 
 \item{family_y}{Character family of the outcome, either \code{"gaussian"} or \code{"binomial"}}
 
