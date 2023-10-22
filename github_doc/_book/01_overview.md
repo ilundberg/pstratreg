@@ -11,7 +11,7 @@ Average causal effects are undefined when some outcomes do not exist. For exampl
 | Person | Wage with job training | Wage without job training | Causal effect |
 | :-: |:-:|:-:|:-:|
 | Javier | \$30 | \$20 | \$30-\$20=\$10
-| William | \$26 | ?? | \$30-??=??
+| William | \$26 | ?? | \$26-??=??
 | **Average** | **\$28** | **??** | **??** |
 
 A social scientist might study the average causal effect of the intervention on future hourly wages. But without job training, William would not be employed at all. His wage ?? does not exist. As a result, the average causal effect does not exist. Principal stratification is a method to estimate average causal effects in the subpopulation that excludes people like William, for whom the effect is undefined.

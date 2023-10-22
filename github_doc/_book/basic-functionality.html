@@ -7,7 +7,7 @@
 <title>Chapter 3 Basic functionality | pstratreg: An R package</title>
 <meta name="author" content="Ian Lundberg and Soonhong Cho">
 <meta name="description" content="This page illustrates the basic functionality of the pstratreg function. This function conducts parametric principal stratification analysis to estimate average causal effect among the...">
-<meta name="generator" content="bookdown 0.35 with bs4_book()">
+<meta name="generator" content="bookdown 0.36 with bs4_book()">
 <meta property="og:title" content="Chapter 3 Basic functionality | pstratreg: An R package">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ilundberg.github.io/pstratreg/github_doc/index.html/basic-functionality.html">
@@ -103,12 +103,12 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pstratreg</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg_sim.html">pstratreg_sim</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
-<pre><code>#&gt;            x     a     m          y
-#&gt; 1  0.1689718 FALSE FALSE         NA
-#&gt; 2  0.3573429 FALSE  TRUE  0.6284374
-#&gt; 3 -0.4740166 FALSE  TRUE -0.7220775
-#&gt; 4 -0.6858395 FALSE FALSE         NA
-#&gt; 5  1.6355298  TRUE  TRUE  2.9380075</code></pre>
+<pre><code>#&gt;            x     a    m          y
+#&gt; 1 -0.8499974  TRUE TRUE  0.4490180
+#&gt; 2  0.3409742 FALSE TRUE -1.3027644
+#&gt; 3 -0.7508652 FALSE TRUE -1.6457591
+#&gt; 4  0.8077379 FALSE TRUE  0.7376321
+#&gt; 5 -0.5110795  TRUE TRUE -0.1220103</code></pre>
 </div>
 <div id="the-pstratreg-function" class="section level2" number="3.2">
 <h2>
@@ -126,13 +126,13 @@
 #&gt; # A tibble: 1 × 3
 #&gt;   mhat1 mhat0 effect_m
 #&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 0.887 0.601    0.287
+#&gt; 1 0.891 0.812   0.0795
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 1 × 3
 #&gt;   effect_y_lower effect_y_naive effect_y_upper
 #&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1          0.224          0.839           1.46</code></pre>
+#&gt; 1          0.639           1.18           1.72</code></pre>
 </div>
 <div id="positive-monotonicity" class="section level2" number="3.3">
 <h2>
@@ -149,18 +149,20 @@
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  treatment_name <span class="op">=</span> <span class="st">"a"</span>,</span>
 <span>  monotonicity_positive <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 9 % of cases</span></span>
+<span><span class="co">#&gt; Forcing mhat1_trunc = mhat0_trunc at midpoint of estimates for those</span></span></code></pre></div>
 <pre><code>#&gt; Effect on mediator, where mediator indicates whether outcome will be valid
 #&gt; # A tibble: 1 × 3
 #&gt;   mhat1 mhat0 effect_m
 #&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 0.887 0.601    0.287
+#&gt; 1 0.891 0.812   0.0795
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 1 × 3
 #&gt;   effect_y_lower effect_y_naive effect_y_upper
 #&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1          0.380          0.816           1.24</code></pre>
+#&gt; 1           1.01           1.18           1.40</code></pre>
 </div>
 <div id="negative-monotonicity" class="section level2" number="3.4">
 <h2>
@@ -176,19 +178,19 @@
 <span>  treatment_name <span class="op">=</span> <span class="st">"a"</span>,</span>
 <span>  monotonicity_negative <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 100 % of cases</span></span>
+<span><span class="co">#&gt; Warning in pstratreg(formula_y = formula(y ~ x * a), formula_m = formula(m ~ : Monotonicity violated in 91 % of cases</span></span>
 <span><span class="co">#&gt; Forcing mhat1_trunc = mhat0_trunc at midpoint of estimates for those</span></span></code></pre></div>
 <pre><code>#&gt; Effect on mediator, where mediator indicates whether outcome will be valid
 #&gt; # A tibble: 1 × 3
 #&gt;   mhat1 mhat0 effect_m
 #&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 0.887 0.601    0.287
+#&gt; 1 0.891 0.812   0.0795
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 1 × 3
 #&gt;   effect_y_lower effect_y_naive effect_y_upper
 #&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1          0.742          0.742          0.742</code></pre>
+#&gt; 1           1.16           1.18           1.20</code></pre>
 </div>
 <div id="aggregate-in-subgroups" class="section level2" number="3.5">
 <h2>
@@ -200,13 +202,13 @@
 <code class="sourceCode R"><span><span class="va">data_with_groups</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group1 <span class="op">=</span> <span class="va">x</span> <span class="op">&lt;</span> <span class="op">-</span><span class="fl">.5</span>,</span>
 <span>         group2 <span class="op">=</span> <span class="va">x</span> <span class="op">&gt;</span> <span class="fl">.5</span><span class="op">)</span></span></code></pre></div>
-<pre><code>#&gt;            x     a     m          y group1 group2
-#&gt; 1  0.1689718 FALSE FALSE         NA  FALSE  FALSE
-#&gt; 2  0.3573429 FALSE  TRUE  0.6284374  FALSE  FALSE
-#&gt; 3 -0.4740166 FALSE  TRUE -0.7220775  FALSE  FALSE
-#&gt; 4 -0.6858395 FALSE FALSE         NA   TRUE  FALSE
-#&gt; 5  1.6355298  TRUE  TRUE  2.9380075  FALSE   TRUE
-#&gt; 6  0.4814201 FALSE  TRUE  1.1002887  FALSE  FALSE</code></pre>
+<pre><code>#&gt;            x     a    m          y group1 group2
+#&gt; 1 -0.8499974  TRUE TRUE  0.4490180   TRUE  FALSE
+#&gt; 2  0.3409742 FALSE TRUE -1.3027644  FALSE  FALSE
+#&gt; 3 -0.7508652 FALSE TRUE -1.6457591   TRUE  FALSE
+#&gt; 4  0.8077379 FALSE TRUE  0.7376321  FALSE   TRUE
+#&gt; 5 -0.5110795  TRUE TRUE -0.1220103   TRUE  FALSE
+#&gt; 6  0.7363362  TRUE TRUE  0.3218909  FALSE   TRUE</code></pre>
 <p>and then we apply the function to estimate within those groups.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pstratreg/man/pstratreg.html">pstratreg</a></span><span class="op">(</span></span>
@@ -220,17 +222,17 @@
 #&gt; # A tibble: 3 × 5
 #&gt;   group1 group2 mhat1 mhat0 effect_m
 #&gt;   &lt;lgl&gt;  &lt;lgl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 FALSE  FALSE  0.927 0.656   0.271 
-#&gt; 2 FALSE  TRUE   0.978 0.897   0.0816
-#&gt; 3 TRUE   FALSE  0.758 0.302   0.456 
+#&gt; 1 FALSE  FALSE  0.915 0.812  0.104  
+#&gt; 2 FALSE  TRUE   0.968 0.843  0.125  
+#&gt; 3 TRUE   FALSE  0.770 0.774 -0.00347
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 3 × 5
 #&gt;   group1 group2 effect_y_lower effect_y_naive effect_y_upper
 #&gt;   &lt;lgl&gt;  &lt;lgl&gt;           &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1 FALSE  FALSE          0.0425          0.718           1.39
-#&gt; 2 FALSE  TRUE           1.02            1.26            1.51
-#&gt; 3 TRUE   FALSE         -1.06            0.269           1.61</code></pre>
+#&gt; 1 FALSE  FALSE           0.653           1.18           1.72
+#&gt; 2 FALSE  TRUE            0.753           1.13           1.52
+#&gt; 3 TRUE   FALSE           0.433           1.23           2.03</code></pre>
 </div>
 <div id="sample-weights" class="section level2" number="3.6">
 <h2>
@@ -255,13 +257,13 @@
 #&gt; # A tibble: 1 × 3
 #&gt;   mhat1 mhat0 effect_m
 #&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 0.865 0.575    0.290
+#&gt; 1 0.926 0.838   0.0882
 #&gt; 
 #&gt; Effect on outcome among those who would have a valid outcome regardless of treatment
 #&gt; # A tibble: 1 × 3
 #&gt;   effect_y_lower effect_y_naive effect_y_upper
 #&gt;            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1          0.193          0.862           1.53</code></pre>
+#&gt; 1          0.815           1.26           1.71</code></pre>
 
 </div>
 </div>
@@ -295,7 +297,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-15.</p>
+    <p>"<strong>pstratreg: An R package</strong>" was written by Ian Lundberg and Soonhong Cho. It was last built on 2023-10-22.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
