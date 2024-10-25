@@ -15,6 +15,10 @@ pstratreg(
   treatment_name,
   monotonicity_positive = FALSE,
   monotonicity_negative = FALSE,
+  mean_dominance_y1_positive = FALSE,
+  mean_dominance_y1_negative = FALSE,
+  mean_dominance_y0_positive = FALSE,
+  mean_dominance_y0_negative = FALSE,
   aggregate = TRUE,
   group_vars = NULL
 )
@@ -39,6 +43,14 @@ pstratreg(
 \item{monotonicity_positive}{A logical. Whether to assume M1 >= M0, so that treatment never causes the outcome to be undefined}
 
 \item{monotonicity_negative}{A logical. Whether to assume M1 <= M0, so that lack of treatment never causes the outcome to be undefined}
+
+\item{mean_dominance_y1_positive}{A logical. Whether to assume E(Y1 | S1 = 1, S0 = 1) >= E(Y1 | S1 = 1, S0 = 0), so that the always-survivor treated units have mean outcomes at least as great as the observed-survivor treated units}
+
+\item{mean_dominance_y1_negative}{A logical. Whether to assume E(Y1 | S1 = 1, S0 = 1) <= E(Y1 | S1 = 1, S0 = 0), so that the always-survivor treated units have mean outcomes no greater the observed-survivor treated units}
+
+\item{mean_dominance_y0_positive}{A logical. Whether to assume E(Y0 | S1 = 1, S0 = 1) >= E(Y0 | S1 = 0, S0 = 1), so that the always-survivor untreated units have mean outcomes at least as great as the observed-survivor untreated units}
+
+\item{mean_dominance_y0_negative}{A logical. Whether to assume E(Y0 | S1 = 1, S0 = 1) <= E(Y0 | S1 = 0, S0 = 1), so that the always-survivor untreated units have mean outcomes no greater the observed-survivor untreated units}
 
 \item{aggregate}{A logical. Whether to aggregate results or return one estimate per row of \code{data}}
 

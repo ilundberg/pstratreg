@@ -3,7 +3,6 @@
 \docType{package}
 \name{pstratreg-package}
 \alias{pstratreg-package}
-\alias{_PACKAGE}
 \title{pstratreg: Estimate Bounds via Principal Stratification}
 \description{
 When studying the causal effect of a treatment on an outcome, post-treatment events may render the outcome undefined. For example, the effect of job training on hourly wage is ill-defined for those who would not be employed without job training. This package estimates average causal effects among those whose outcome would be defined regardless of the intervention, producing a set-identified result.

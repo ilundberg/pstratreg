@@ -11,6 +11,10 @@
 #' @param treatment_name A character for the name of the treatment in \code{data},
 #' @param monotonicity_positive A logical. Whether to assume M1 >= M0, so that treatment never causes the outcome to be undefined
 #' @param monotonicity_negative A logical. Whether to assume M1 <= M0, so that lack of treatment never causes the outcome to be undefined
+#' @param mean_dominance_y1_positive A logical. Whether to assume E(Y1 | S1 = 1, S0 = 1) >= E(Y1 | S1 = 1, S0 = 0), so that the always-survivor treated units have mean outcomes at least as great as the observed-survivor treated units
+#' @param mean_dominance_y1_negative A logical. Whether to assume E(Y1 | S1 = 1, S0 = 1) <= E(Y1 | S1 = 1, S0 = 0), so that the always-survivor treated units have mean outcomes no greater the observed-survivor treated units
+#' @param mean_dominance_y0_positive A logical. Whether to assume E(Y0 | S1 = 1, S0 = 1) >= E(Y0 | S1 = 0, S0 = 1), so that the always-survivor untreated units have mean outcomes at least as great as the observed-survivor untreated units
+#' @param mean_dominance_y0_negative A logical. Whether to assume E(Y0 | S1 = 1, S0 = 1) <= E(Y0 | S1 = 0, S0 = 1), so that the always-survivor untreated units have mean outcomes no greater the observed-survivor untreated units
 #' @param aggregate A logical. Whether to aggregate results or return one estimate per row of \code{data}
 #' @param group_vars Character vector of names of variables in \code{data} by which to group when aggregating results. Only relevant when \code{aggregate = TRUE}
 #' @returns An object of class \code{pstratreg}
@@ -45,6 +49,10 @@ pstratreg <- function(
     treatment_name,
     monotonicity_positive = FALSE, # logical. Assume M1 >= M0?
     monotonicity_negative = FALSE, # logical. Assume M1 <= M0?
+    mean_dominance_y1_positive = FALSE,
+    mean_dominance_y1_negative = FALSE,
+    mean_dominance_y0_positive = FALSE,
+    mean_dominance_y0_negative = FALSE,
     aggregate = TRUE,
     group_vars = NULL
 ) {
@@ -60,6 +68,10 @@ pstratreg <- function(
     treatment_name = treatment_name,
     monotonicity_positive = monotonicity_positive,
     monotonicity_negative = monotonicity_negative,
+    mean_dominance_y1_positive = mean_dominance_y1_positive,
+    mean_dominance_y1_negative = mean_dominance_y1_negative,
+    mean_dominance_y0_positive = mean_dominance_y0_positive,
+    mean_dominance_y0_negative = mean_dominance_y0_negative,
     aggregate = aggregate,
     group_vars = group_vars
   )
@@ -172,6 +184,16 @@ pstratreg <- function(
   }
   if (monotonicity_positive & monotonicity_negative) {
     stop("monotonicity_positive and monotonicity_negative should not both be TRUE, which would entail an assumption that the treatment does not affect the mediator for any units, in which case this method is not relevant")
+  }
+
+  # Check mean dominance argument validity
+  if (
+    !is.logical(mean_dominance_y1_positive) |
+    !is.logical(mean_dominance_y1_negative) |
+    !is.logical(mean_dominance_y0_positive) |
+    !is.logical(mean_dominance_y0_negative)
+  ) {
+    stop("mean_dominance_y._. arguments should be TRUE or FALSE to indicate whether each form of mean dominance is assumed")
   }
 
   # Check that aggregate is logical
@@ -373,10 +395,32 @@ pstratreg <- function(
         upper = F
       )
     })
-    yhat0_lower = yhat0_naive + residual_means_lower_0
-    yhat0_upper = yhat0_naive + residual_means_upper_0
-    yhat1_lower = yhat1_naive + residual_means_lower_1
-    yhat1_upper = yhat1_naive + residual_means_upper_1
+    yhat0_lower <- yhat0_naive + residual_means_lower_0
+    yhat0_upper <- yhat0_naive + residual_means_upper_0
+    yhat1_lower <- yhat1_naive + residual_means_lower_1
+    yhat1_upper <- yhat1_naive + residual_means_upper_1
+  }
+
+  # Mean dominance assumption: Narrow bounds if assumed
+  if (mean_dominance_y1_positive) {
+    # Assumption: E(Y^1 | S^1 = 1, S^0 = 1) >= E(Y^1 | S^1 = 1, S^0 = 0)
+    # Implication: Lower bound for Y^1 becomes naive estimate
+    yhat1_lower <- yhat1_naive
+  }
+  if (mean_dominance_y1_negative) {
+    # Assumption: E(Y^1 | S^1 = 1, S^0 = 1) <= E(Y^1 | S^1 = 1, S^0 = 0)
+    # Implication: Upper bound for Y^1 becomes naive estimate
+    yhat1_upper <- yhat1_naive
+  }
+  if (mean_dominance_y0_positive) {
+    # Assumption: E(Y^0 | S^1 = 1, S^0 = 1) >= E(Y^0 | S^1 = 0, S^0 = 1)
+    # Implication: Lower bound for Y^0 becomes naive estimate
+    yhat0_lower <- yhat0_naive
+  }
+  if (mean_dominance_y0_negative) {
+    # Assumption: E(Y^0 | S^1 = 1, S^0 = 1) <= E(Y^0 | S^1 = 0, S^0 = 1)
+    # Implication: Upper bound for Y^0 becomes naive estimate
+    yhat0_upper <- yhat0_naive
   }
 
   # Prepare data frame of estimates for M and for Y
