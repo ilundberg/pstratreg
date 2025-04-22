@@ -242,12 +242,24 @@ pstratreg <- function(
   # Calculate the probability of each stratum given X
   # with equations that depend on the monotonicy assumption
   if (!monotonicity_positive & !monotonicity_negative) {
-    p_s <- data.frame(
-      never_survive = (1 - mhat0) * (1 - mhat1),
-      always_survive = mhat0 * mhat1,
-      complier = (1 - mhat0) * mhat1,
-      defier = mhat0 * (1 - mhat1)
+    # Calculate lower limit on probability of always survivor.
+    p_always_lower <- ifelse(
+      mhat1 + mhat0 - 1 > 0,
+      mhat1 + mhat0 - 1,
+      0
     )
+
+    # Calculate the upper limit on the probability of always survivor.
+    p_always_upper <- ifelse(
+      mhat1 < mhat0,
+      mhat1,
+      mhat0
+    )
+
+    # Convert to probabilities among the survivors in each treatment condition
+    p_always_lower_1 <- p_always_lower / mhat1
+    p_always_lower_0 <- p_always_lower / mhat0
+
   } else if (monotonicity_positive) {
     if (any(mhat0 > mhat1)) {
       violation_cases <- mhat0 > mhat1
@@ -259,12 +271,11 @@ pstratreg <- function(
         mhat0_trunc[violation_cases] <-
         midpoint[violation_cases]
     }
-    p_s <- data.frame(
-      never_survive = 1 - mhat1_trunc,
-      always_survive = mhat0_trunc,
-      complier = mhat1_trunc - mhat0_trunc,
-      defier = 0
-    )
+    # Under positive montonicity, probability of being always-survivor is point-identified
+    p_always_lower_1 <- p_always_upper_1 <- mhat0_trunc / mhat1_trunc
+    # and equals 1 among the untreated survivors
+    p_always_lower_0 <- p_always_upper_0 <- mhat0_trunc / mhat0_trunc
+
   } else if (monotonicity_negative) {
     if (any(mhat1 > mhat0)) {
       violation_cases <- mhat1 > mhat0
@@ -276,51 +287,45 @@ pstratreg <- function(
         mhat0_trunc[violation_cases] <-
         midpoint[violation_cases]
     }
-    p_s <- data.frame(
-      never_survive = 1 - mhat0_trunc,
-      always_survive = mhat1_trunc,
-      complier = 0,
-      defier = mhat0_trunc - mhat1_trunc
-    )
-  }
-  # Check that p_s sums to 1 for each unit
-  # If does not, then recode with warning
-  p_s_sum <- rowSums(p_s)
-  not_1 <- (abs(p_s_sum - 1) > .01)
-  if (any(not_1)) {
-    warning(paste("Recoding",round(100*mean(not_1),1),"% of p_s to sum to 1"))
-    for (i in which(not_1)) {
-      p_s[i,] <- p_s[i,] / p_s_sum[i]
-    }
+    # Under negative montonicity, probability of being always-survivor is point-identified
+    p_always_lower_0 <- p_always_upper_1 <- mhat1_trunc / mhat0_trunc
+    # and equals 1 among the treated survivors
+    p_always_lower_1 <- p_always_upper_1 <- mhat1_trunc / mhat1_trunc
   }
 
   # Write a function to find for each unit
   # the probability that treated or untreated people
   # who look like them and survive are always-survivors
   # as opposed to induced one or the other way
-  p_always_for_yhat0 <- p_s$always_survive / (p_s$always_survive + p_s$defier)
-  p_induced_for_yhat0 <- 1 - p_always_for_yhat0
-  p_always_for_yhat1 <- p_s$always_survive / (p_s$always_survive + p_s$complier)
-  p_induced_for_yhat1 <- 1 - p_always_for_yhat1
+  #p_always_for_yhat0 <- p_s$always_survive / (p_s$always_survive + p_s$defier)
+  #p_induced_for_yhat0 <- 1 - p_always_for_yhat0
+  #p_always_for_yhat1 <- p_s$always_survive / (p_s$always_survive + p_s$complier)
+  #p_induced_for_yhat1 <- 1 - p_always_for_yhat1
 
   # Calculate naive predictions
   yhat0_naive <- stats::predict(fit_y, type = "response", newdata = data_d0)
   yhat1_naive <- stats::predict(fit_y, type = "response", newdata = data_d1)
 
-  # Code to analyze residuals: Lower and upper bounds
+  # Determine the proportion to drop
+  to_drop_lower_0 <- 1 - p_always_upper_0
+  to_drop_lower_1 <- 1 - p_always_upper_1
+  to_drop_upper_0 <- 1 - p_always_lower_0
+  to_drop_upper_1 <- 1 - p_always_lower_1
+
+  # Create lower and upper bounds on expected value of Y
   if (family_y$family == "binomial") {
 
     # lower bound assumes all compliers + defiers are y = 1
-    yhat0_lower <- (yhat0_naive - p_induced_for_yhat0) / p_always_for_yhat0
-    yhat1_lower <- (yhat1_naive - p_induced_for_yhat1) / p_always_for_yhat1
-    # but lower bound cannot be below 0
-    yhat0_lower <- ifelse(yhat0_lower < 0, 0, yhat0_lower)
-    yhat1_lower <- ifelse(yhat1_lower < 0, 0, yhat1_lower)
+    yhat0_lower <- (yhat0_naive - to_drop_upper_0) / (1 - to_drop_upper_0)
+    yhat1_lower <- (yhat1_naive - to_drop_upper_1) / (1 - to_drop_upper_1)
 
     # upper bound assumes all compliers + defiers are y = 0
-    yhat0_upper <- yhat0_naive / p_always_for_yhat0
-    yhat1_upper <- yhat1_naive / p_always_for_yhat1
-    # but upper bound cannot be above 1
+    yhat0_upper <- (yhat0_naive - to_drop_lower_0) / (1 - to_drop_lower_0)
+    yhat1_upper <- (yhat1_naive - to_drop_lower_1) / (1 - to_drop_lower_1)
+
+    # enforce lower bound not below 0 and upper bound not above 1
+    yhat0_lower <- ifelse(yhat0_lower < 0, 0, yhat0_lower)
+    yhat1_lower <- ifelse(yhat1_lower < 0, 0, yhat1_lower)
     yhat0_upper <- ifelse(yhat0_upper > 1, 1, yhat0_upper)
     yhat1_upper <- ifelse(yhat1_upper > 1, 1, yhat1_upper)
 
@@ -363,9 +368,11 @@ pstratreg <- function(
     }
 
     # Loop over cases to produce residual mean estimates
+    # Note that in each case, we set prop_always to the smallest possible value
+    # which results in the most extreme possible estimates
     residual_means_upper_0 <- sapply(1:nrow(data), function(i) {
       residual_mean_estimator(
-        prop_always = p_always_for_yhat0[i],
+        prop_always = p_always_lower_0,
         resid_sd = resid_sd[i],
         std_residual_draws = std_residual_draws,
         upper = T
@@ -373,7 +380,7 @@ pstratreg <- function(
     })
     residual_means_upper_1 <- sapply(1:nrow(data), function(i) {
       residual_mean_estimator(
-        prop_always = p_always_for_yhat1[i],
+        prop_always = p_always_lower_1,
         resid_sd = resid_sd[i],
         std_residual_draws = std_residual_draws,
         upper = T
@@ -381,7 +388,7 @@ pstratreg <- function(
     })
     residual_means_lower_0 <- sapply(1:nrow(data), function(i) {
       residual_mean_estimator(
-        prop_always = p_always_for_yhat0[i],
+        prop_always = p_always_lower_0,
         resid_sd = resid_sd[i],
         std_residual_draws = std_residual_draws,
         upper = F
@@ -389,7 +396,7 @@ pstratreg <- function(
     })
     residual_means_lower_1 <- sapply(1:nrow(data), function(i) {
       residual_mean_estimator(
-        prop_always = p_always_for_yhat1[i],
+        prop_always = p_always_lower_1,
         resid_sd = resid_sd[i],
         std_residual_draws = std_residual_draws,
         upper = F
