@@ -320,8 +320,8 @@ pstratreg <- function(
     yhat1_lower <- (yhat1_naive - to_drop_upper_1) / (1 - to_drop_upper_1)
 
     # upper bound assumes all compliers + defiers are y = 0
-    yhat0_upper <- (yhat0_naive - to_drop_lower_0) / (1 - to_drop_lower_0)
-    yhat1_upper <- (yhat1_naive - to_drop_lower_1) / (1 - to_drop_lower_1)
+    yhat0_upper <- (yhat0_naive - 0) / (1 - to_drop_lower_0)
+    yhat1_upper <- (yhat1_naive - 0) / (1 - to_drop_lower_1)
 
     # enforce lower bound not below 0 and upper bound not above 1
     yhat0_lower <- ifelse(yhat0_lower < 0, 0, yhat0_lower)
