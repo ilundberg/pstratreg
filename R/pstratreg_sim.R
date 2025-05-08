@@ -15,6 +15,6 @@ pstratreg_sim <- function(n = 100) {
 
   data.frame(x = stats::rnorm(n)) |>
     dplyr::mutate(a = as.logical(stats::rbinom(dplyr::n(), 1, stats::plogis(x))),
-                  m = as.logical(stats::rbinom(dplyr::n(), 1, stats::plogis(1 + x + a))),
-                  y = dplyr::case_when(m == 1 ~ stats::rnorm(dplyr::n(), x + a)))
+                  s = as.logical(stats::rbinom(dplyr::n(), 1, stats::plogis(1 + x + a))),
+                  y = dplyr::case_when(s == 1 ~ stats::rnorm(dplyr::n(), x + a)))
 }

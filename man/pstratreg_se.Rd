@@ -21,7 +21,7 @@ Calculate standard errors by a nonparametric bootstrap, and 95% confidence inter
 sim <- pstratreg_sim(n = 100)
 result <- pstratreg(
      formula_y = formula(y ~ x + a),
-     formula_m = formula(m ~ x + a),
+     formula_s = formula(s ~ x + a),
      data = sim,
      treatment_name = "a"
 )

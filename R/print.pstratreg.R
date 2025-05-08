@@ -15,11 +15,11 @@ print.pstratreg <- function(x,...) {
   # Initialize some objects for non-standard evaluation
   mhat1 <- mhat0 <- effect_m <- NULL
 
-  cat("Effect on mediator, where mediator indicates whether outcome will be valid\n")
+  cat("Effect on survival, where S = 1 indicates the outcome exists\n")
   print(
-    x$estimates_m |>
+    x$estimates_s |>
       dplyr::select(tidyselect::any_of(c(x$call$group_vars)),
-                    mhat1,mhat0,effect_m)
+                    s0, s1, effect_s)
   )
   cat("\nEffect on outcome among those who would have a valid outcome regardless of treatment\n")
   print(

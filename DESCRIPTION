@@ -13,5 +13,6 @@ Imports:
     tidyr,
     tidyselect,
     methods,
-    foreach
+    foreach,
+    purrr
 RoxygenNote: 7.3.2
