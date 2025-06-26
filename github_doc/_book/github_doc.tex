@@ -109,7 +109,7 @@
 \fi
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -120,7 +120,7 @@
 
 \title{pstratreg: An R package}
 \author{Ian Lundberg and Soonhong Cho}
-\date{2023-10-22}
+\date{2025-06-25}
 
 \begin{document}
 \maketitle
@@ -129,12 +129,11 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\hypertarget{welcome}{%
-\chapter*{Welcome!}\label{welcome}}
+\chapter*{Welcome!}\label{welcome}
 \addcontentsline{toc}{chapter}{Welcome!}
 
 \begin{quote}
-\textbf{WARNING.} This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.\footnote{Ian Lundberg (\href{mailto:ilundberg@cornell.edu}{\nolinkurl{ilundberg@cornell.edu}}) and Soonhong Cho (\href{mailto:soonhongcho@g.ucla.edu}{\nolinkurl{soonhongcho@g.ucla.edu}})}
+\textbf{Warning.} This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.\footnote{Ian Lundberg (\href{mailto:ianlundberg@ucla.edu}{\nolinkurl{ianlundberg@ucla.edu}}) and Soonhong Cho (\href{mailto:soonhongcho@g.ucla.edu}{\nolinkurl{soonhongcho@g.ucla.edu}})}. You can also see our \href{https://tinyurl.com/nonexistentoutcomes}{\textbf{draft}} and \href{assets/nonexistentoutcomes_utokyo.pdf}{\textbf{slides}} from a presentation of this project.
 \end{quote}
 
 This website documents the \textbf{pstratreg} package for R. The package helps study causal effects when some treatment values cause outcomes to be non-existent for some units.
@@ -153,8 +152,7 @@ Possible applications include
 
 This package provides regression-based methods for principal stratification that rely on parametric models and are useful in settings where one hopes to adjust for many confounders.
 
-\hypertarget{getting-started}{%
-\section*{Getting started}\label{getting-started}}
+\section*{Getting started}\label{getting-started}
 \addcontentsline{toc}{section}{Getting started}
 
 To get started, first install \href{https://rstudio-education.github.io/hopr/starting.html}{R and RStudio}. Then install the package.
@@ -167,10 +165,9 @@ To get started, first install \href{https://rstudio-education.github.io/hopr/sta
 
 Now head on to the next page to see the types of questions this package can help answer.
 
-This project is joint work between Ian Lundberg (Cornell, \href{mailto:ilundberg@cornell.edu}{\nolinkurl{ilundberg@cornell.edu}}) and Soonhong Cho (UCLA, \href{mailto:soonhongcho@g.ucla.edu}{\nolinkurl{soonhongcho@g.ucla.edu}}).
+This project is joint work between Ian Lundberg (UCLA, \href{mailto:ilundberg@cornell.edu}{ianlundberg@ucla.edu}) and Soonhong Cho (UCLA, \href{mailto:tnsehdtm@gmail.com}{\nolinkurl{tnsehdtm@gmail.com}}).
 
-\hypertarget{the-goal}{%
-\chapter{The goal}\label{the-goal}}
+\chapter{The goal}\label{the-goal}
 
 Average causal effects are undefined when some outcomes do not exist. For example, consider the two people below who were eligible for a job training intervention.
 
@@ -206,8 +203,7 @@ A social scientist might study the average causal effect of the intervention on 
 
 This page is a tutorial on the ideas behind principal stratification. The next page discusses the regression setting that is the focus of this package. Subsequent pages show package functionality.
 
-\hypertarget{defining-principal-strata}{%
-\section{Defining principal strata}\label{defining-principal-strata}}
+\section{Defining principal strata}\label{defining-principal-strata}
 
 Let \(M_i\) be a binary mediator (e.g., employment) that determines whether an outcome exists for unti \(i\). Let \(Y_i\) be the outcome, where \(Y\) is undefined when \(M = 0\). Let \(\{M_i^1,M_i^0\}\) and \(\{Y_i^1,Y_i^0\}\) be the potential values that the mediator and outcome would take for unit \(i\) under job training and under no job training. The table above gave values for \(\{Y_i^1,Y_i^0\}\).
 
@@ -237,8 +233,7 @@ English
 
 In our example, Javier is a member of the always stratum and William is a member of the induced stratum.
 
-\hypertarget{target-population-the-always-stratum}{%
-\section{Target population: The always stratum}\label{target-population-the-always-stratum}}
+\section{Target population: The always stratum}\label{target-population-the-always-stratum}
 
 The average causal effect \(E(Y^1 - Y^0)\) is only defined in the ``Always'' stratum.
 
@@ -256,8 +251,7 @@ Our causal estimand is therefore the average causal effect in the always stratum
 
 \[E(Y^1 - Y^0 \mid S = \text{Always})\]
 
-\hypertarget{fundamental-problem-strata-are-latent}{%
-\section{Fundamental problem: Strata are latent}\label{fundamental-problem-strata-are-latent}}
+\section{Fundamental problem: Strata are latent}\label{fundamental-problem-strata-are-latent}
 
 Suppose William received job training. We would observe his \$26 wage. We would not know that he would not have been employed without job training. If William received job training, then in the observed data we would know that he was either in the always stratum or the induced stratum.
 
@@ -274,8 +268,7 @@ What can be observed is the treatment value \(D_i\) and the mediator value \(M_i
 \(M_i = 0\) & Never and Blocked & Never and Induced \\
 \end{longtable}
 
-\hypertarget{solution-step-1-make-an-assumption}{%
-\section{Solution step 1: Make an assumption}\label{solution-step-1-make-an-assumption}}
+\section{Solution step 1: Make an assumption}\label{solution-step-1-make-an-assumption}
 
 Assumptions can simplify the problem, and can be plausible in some settings. We focus on two versions of one assumption.
 
@@ -307,8 +300,7 @@ Under positive monotonicity, some latent strata become observable.
 
 For example, suppose that Javier was assigned to no job training, and we observed that he was employed. Under positive monotonicity, we would know that Javier was in the always stratum because he was employed without job training, and thus surely would have been employed with job training.
 
-\hypertarget{solution-step-2-bound-the-average-effect-in-the-always-stratum}{%
-\section{Solution step 2: Bound the average effect in the always stratum}\label{solution-step-2-bound-the-average-effect-in-the-always-stratum}}
+\section{Solution step 2: Bound the average effect in the always stratum}\label{solution-step-2-bound-the-average-effect-in-the-always-stratum}
 
 Suppose we assume positive monotonicity, and we observe data where four people have been randomized to each treatment condition.
 
@@ -392,8 +384,7 @@ Because under positive monotonicity all untreated individuals must be always-emp
 
 The difference tells us that the average causal effect of job training on the wages of the always employed is between \$27 - \$18 = \$9 and \$36 - \$18 = \$18.
 
-\hypertarget{why-regression}{%
-\chapter{Why regression}\label{why-regression}}
+\chapter{Why regression}\label{why-regression}
 
 The goal of this package is to support parametric model-based principal stratification. This page motivates that choice: why should we want a model?
 
@@ -448,25 +439,22 @@ In the latter case, we need model-based principal stratification.
   \end{itemize}
 \end{enumerate}
 
-\hypertarget{upper-bound-left---right}{%
-\subsection{Upper bound: Left - Right}\label{upper-bound-left---right}}
+\subsection{Upper bound: Left - Right}\label{upper-bound-left---right}
 
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_upper.png}
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_control.png}
 
-\hypertarget{lower-bound-left---right}{%
-\subsection{Lower bound: Left - Right}\label{lower-bound-left---right}}
+\subsection{Lower bound: Left - Right}\label{lower-bound-left---right}
 
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_lower.png}
 \includegraphics[width=0.4\textwidth,height=\textheight]{assets/teach_jobtrain_control.png}
 
-\hypertarget{basic-functionality}{%
-\chapter{Basic functionality}\label{basic-functionality}}
+\chapter{Basic functionality}\label{basic-functionality}
 
 This page illustrates the basic functionality of the \texttt{pstratreg} function. This function conducts parametric principal stratification analysis to estimate average causal effect among the always-valid subgroup whose outcome would exist in either treatment condition.
 
 \begin{quote}
-Jargon? Start with the first page on \protect\hyperlink{the-goal}{the goal}!
+Jargon? Start with the first page on \hyperref[the-goal]{the goal}!
 \end{quote}
 
 The package automates the process to
@@ -493,8 +481,7 @@ The package automates the process to
   return estimates, conditional on population subgroups if requested
 \end{itemize}
 
-\hypertarget{simulate-data}{%
-\section{Simulate data}\label{simulate-data}}
+\section{Simulate data}\label{simulate-data}
 
 We first simulate some data for illustration.
 
@@ -527,16 +514,15 @@ The data has four variables
 \end{Shaded}
 
 \begin{verbatim}
-#>           x    a    m          y
-#> 1 0.9283894 TRUE TRUE 2.60792820
-#> 2 0.8852708 TRUE TRUE 2.43654649
-#> 3 0.6533703 TRUE TRUE 0.76692884
-#> 4 0.2260541 TRUE TRUE 0.03903411
-#> 5 1.0079187 TRUE TRUE 1.33402878
+#>            x     a     s          y
+#> 1 -0.3995057  TRUE  TRUE  1.7729094
+#> 2 -0.5056109  TRUE  TRUE -0.9123792
+#> 3  2.1129859  TRUE  TRUE  3.7708568
+#> 4 -0.9167857 FALSE FALSE         NA
+#> 5 -0.7186774 FALSE FALSE         NA
 \end{verbatim}
 
-\hypertarget{the-pstratreg-function}{%
-\section{\texorpdfstring{The \texttt{pstratreg} function}{The pstratreg function}}\label{the-pstratreg-function}}
+\section{\texorpdfstring{The \texttt{pstratreg} function}{The pstratreg function}}\label{the-pstratreg-function}
 
 The call below runs a principal stratification regression analysis with default options, returning estimates of the average treatment effect among the latent stratum who would have valid outcomes regardless of treatment.
 
@@ -544,7 +530,7 @@ The call below runs a principal stratification regression analysis with default 
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}
 \NormalTok{)}
@@ -552,21 +538,20 @@ The call below runs a principal stratification regression analysis with default 
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.824 0.735   0.0890
+#> 1 0.810 0.813  0.00336
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.573          0.975           1.38
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1          0.380           2.10
 \end{verbatim}
 
-\hypertarget{positive-monotonicity}{%
-\section{Positive monotonicity}\label{positive-monotonicity}}
+\section{Positive monotonicity}\label{positive-monotonicity}
 
 If you believe that the \texttt{TRUE} value of the treatment never causes the outcome to be undefined, then you might add the \texttt{monotonicity\_positive\ =\ TRUE} option.
 
@@ -580,32 +565,31 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_positive =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_m = formula(m \textasciitilde{} : Monotonicity violated in 8 \% of cases}
-\CommentTok{\#\textgreater{} Forcing mhat1\_trunc = mhat0\_trunc at midpoint of estimates for those}
+\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 62 \% of cases}
+\CommentTok{\#\textgreater{} Forcing s1\_trunc = s0\_trunc at midpoint of estimates for those}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.824 0.735   0.0890
+#> 1 0.810 0.813  0.00336
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.772          0.954           1.15
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1           1.22           1.25
 \end{verbatim}
 
-\hypertarget{negative-monotonicity}{%
-\section{Negative monotonicity}\label{negative-monotonicity}}
+\section{Negative monotonicity}\label{negative-monotonicity}
 
 Conversely, you can assume negative monotonicity with \texttt{monotonicity\_negative\ =\ TRUE}. If you are not sure what negative monotonicity is, see the previous page on the big idea!
 
@@ -615,32 +599,31 @@ In this particular simulation, negative monotonicity does not hold and you see b
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_negative =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_m = formula(m \textasciitilde{} : Monotonicity violated in 92 \% of cases}
-\CommentTok{\#\textgreater{} Forcing mhat1\_trunc = mhat0\_trunc at midpoint of estimates for those}
+\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 38 \% of cases}
+\CommentTok{\#\textgreater{} Forcing s1\_trunc = s0\_trunc at midpoint of estimates for those}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.824 0.735   0.0890
+#> 1 0.810 0.813  0.00336
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.948          0.951          0.955
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1           1.23           1.26
 \end{verbatim}
 
-\hypertarget{aggregate-in-subgroups}{%
-\section{Aggregate in subgroups}\label{aggregate-in-subgroups}}
+\section{Aggregate in subgroups}\label{aggregate-in-subgroups}
 
 Instead of sample average effect estimates, you might want the estimate within subgroups defined by a grouping variable in the data. The \texttt{group\_vars} argument allows you to specify a vector of variable names from \texttt{data} within which to aggregate results.
 
@@ -655,13 +638,13 @@ First we create some groups for illustration
 \end{Shaded}
 
 \begin{verbatim}
-#>            x     a    m          y group1 group2
-#> 1  0.9283894  TRUE TRUE 2.60792820  FALSE   TRUE
-#> 2  0.8852708  TRUE TRUE 2.43654649  FALSE   TRUE
-#> 3  0.6533703  TRUE TRUE 0.76692884  FALSE   TRUE
-#> 4  0.2260541  TRUE TRUE 0.03903411  FALSE  FALSE
-#> 5  1.0079187  TRUE TRUE 1.33402878  FALSE   TRUE
-#> 6 -0.1919301 FALSE TRUE 2.65221159  FALSE  FALSE
+#>             x     a     s          y group1 group2
+#> 1 -0.39950575  TRUE  TRUE  1.7729094  FALSE  FALSE
+#> 2 -0.50561090  TRUE  TRUE -0.9123792   TRUE  FALSE
+#> 3  2.11298587  TRUE  TRUE  3.7708568  FALSE   TRUE
+#> 4 -0.91678566 FALSE FALSE         NA   TRUE  FALSE
+#> 5 -0.71867737 FALSE FALSE         NA   TRUE  FALSE
+#> 6 -0.04953687 FALSE FALSE         NA  FALSE  FALSE
 \end{verbatim}
 
 and then we apply the function to estimate within those groups.
@@ -670,7 +653,7 @@ and then we apply the function to estimate within those groups.
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data\_with\_groups,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{group\_vars =} \FunctionTok{c}\NormalTok{(}\StringTok{"group1"}\NormalTok{,}\StringTok{"group2"}\NormalTok{)}
@@ -679,25 +662,25 @@ and then we apply the function to estimate within those groups.
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 3 x 5
-#>   group1 group2 mhat1 mhat0 effect_m
+#>   group1 group2    s0    s1 effect_s
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.926 0.791   0.136 
-#> 2 FALSE  TRUE   0.992 0.940   0.0527
-#> 3 TRUE   FALSE  0.511 0.436   0.0743
+#> 1 FALSE  FALSE  0.869 0.863 -0.00610
+#> 2 FALSE  TRUE   0.959 0.951 -0.00793
+#> 3 TRUE   FALSE  0.624 0.645  0.0212 
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 3 x 5
-#>   group1 group2 effect_y_lower effect_y_naive effect_y_upper
-#>   <lgl>  <lgl>           <dbl>          <dbl>          <dbl>
-#> 1 FALSE  FALSE           0.459          0.913           1.37
-#> 2 FALSE  TRUE            0.942          1.08            1.21
-#> 3 TRUE   FALSE          -0.523          0.760           2.04
+#> # A tibble: 3 x 4
+#> # Groups:   group1, group2 [3]
+#>   group1 group2 effect_y_lower effect_y_upper
+#>   <lgl>  <lgl>           <dbl>          <dbl>
+#> 1 FALSE  FALSE           0.668           1.75
+#> 2 TRUE   FALSE          -1.35            3.40
+#> 3 FALSE  TRUE            1.21            1.60
 \end{verbatim}
 
-\hypertarget{sample-weights}{%
-\section{Sample weights}\label{sample-weights}}
+\section{Sample weights}\label{sample-weights}
 
 If you have case weights from sampling with unequal probabilities, they can be provided in a vector of length \texttt{nrow(data)} using the \texttt{weights} argument.
 
@@ -715,7 +698,7 @@ and then call the function. Note that the \texttt{glm()} used internally to esti
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{weights =}\NormalTok{ sim\_weights}
@@ -726,21 +709,20 @@ and then call the function. Note that the \texttt{glm()} used internally to esti
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.837 0.743   0.0937
+#> 1 0.792 0.787 -0.00493
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.671           1.10           1.53
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1          0.332           2.17
 \end{verbatim}
 
-\hypertarget{relaxing-homoskedasticity}{%
-\chapter{Relaxing homoskedasticity}\label{relaxing-homoskedasticity}}
+\chapter{Relaxing homoskedasticity}\label{relaxing-homoskedasticity}
 
 Model-based principal stratification bounds involve a model for the conditional distribution of the outcome, not just the conditional mean. For that goal, one might be concerned about the homoskedasticity assumption.
 
@@ -750,8 +732,7 @@ Homoskedasticity: The assumption that the conditional outcome variance is equal 
 
 While commonly assumed in Ordinary Least Squares, homoskedasticity is an assumption that can be relaxed. We currently support parametric model for heteroskedasticity based on the ideas of variance function regression (\href{https://doi.org/10.1111/j.1467-9531.2009.01222.x}{Western \& Bloome 2009}).
 
-\hypertarget{model-the-conditional-mean}{%
-\section{Model the conditional mean}\label{model-the-conditional-mean}}
+\section{Model the conditional mean}\label{model-the-conditional-mean}
 
 We begin with an ordinary least squares outcome model, as in the homoskedastic case,
 
@@ -761,8 +742,7 @@ E(Y\mid \vec{X},A,M = 1) =\alpha + A\hat\beta  + \vec{X}\vec\gamma + A\vec{X}'\v
 
 where \(A\) is a binary treatment, \(\vec{X}\) is a vector of measured confounders, and \(M = 1\) is the mediator indicating that the outcome is valid. Let \(\hat{Y}_i\) be the predicted value for each unit \(i\) from this model.
 
-\hypertarget{model-the-conditional-variance}{%
-\section{Model the conditional variance}\label{model-the-conditional-variance}}
+\section{Model the conditional variance}\label{model-the-conditional-variance}
 
 We next allow the conditional variance of \(Y\) to vary as a function of \(A\) and \(\vec{X}\). We first define the squared residual
 
@@ -780,8 +760,7 @@ Predictions from this model (exponentiated) are estimates of the conditional var
 \hat{V}(Y\mid \vec{X},A = 0,M=1) &= \text{exp}\left[\hat\lambda + \vec{X}'\hat{\vec\nu}\right] \\
 \end{aligned}\]
 
-\hypertarget{in-code}{%
-\section{In code}\label{in-code}}
+\section{In code}\label{in-code}
 
 You can relax the homskedasticity assumption with the \texttt{homoskedastic\ =\ FALSE} argument. Doing so estimates a variance function regression (as above) using the same predictor model formula as in \texttt{formula\_y}.
 
@@ -799,7 +778,7 @@ With the data setup above, we can estimate the models.
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{homoskedastic =} \ConstantTok{FALSE}
@@ -808,17 +787,17 @@ With the data setup above, we can estimate the models.
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.935 0.637    0.298
+#> 1 0.641 0.894    0.253
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1         0.0627          0.665           1.26
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1         0.0246           1.74
 \end{verbatim}
 
 Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for \(Y\), which might be done if the model formula involves many parameters and you see errors from the internal \texttt{glm()} call about convergence for the variance regression.
@@ -827,7 +806,7 @@ Optionally, you can specify a separate model formula for the model of squared re
 \begin{Highlighting}[]
 \NormalTok{result }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{formula\_sq\_resid =} \FunctionTok{formula}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
@@ -837,21 +816,20 @@ Optionally, you can specify a separate model formula for the model of squared re
 \end{Shaded}
 
 \begin{verbatim}
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 x 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.935 0.637    0.298
+#> 1 0.641 0.894    0.253
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 x 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1         0.0591          0.665           1.27
+#> # A tibble: 1 x 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1         0.0555           1.70
 \end{verbatim}
 
-\hypertarget{standard-errors}{%
-\chapter{Standard errors}\label{standard-errors}}
+\chapter{Standard errors}\label{standard-errors}
 
 Appropriate standard errors depend on application-specific knowledge about how the data were generated. For example, appropriate standard errors are not the same for sampling variability in simple random samples, sampling variability in complex samples, and finite-sample inference with variation from random treatment assignment.
 
@@ -880,7 +858,7 @@ and produce point estimates with a call to \texttt{pstratreg}.
 \begin{Highlighting}[]
 \NormalTok{pstratreg.out }\OtherTok{\textless{}{-}} \FunctionTok{pstratreg}\NormalTok{(}
   \AttributeTok{formula\_y =} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
-  \AttributeTok{formula\_m =} \FunctionTok{formula}\NormalTok{(m }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
+  \AttributeTok{formula\_s =} \FunctionTok{formula}\NormalTok{(s }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x}\SpecialCharTok{*}\NormalTok{a),}
   \AttributeTok{data =}\NormalTok{ data,}
   \AttributeTok{treatment\_name =} \StringTok{"a"}
 \NormalTok{)}
@@ -898,21 +876,16 @@ To estimate standard errors and confidence intervals, hand the output of the cal
 The output of a call to \texttt{pstratreg\_se} is a data frame containing estimates and inferential quantities.
 
 \begin{verbatim}
-#> # A tibble: 6 x 5
-#>   estimand       estimate     se ci.min ci.max
-#>   <chr>             <dbl>  <dbl>  <dbl>  <dbl>
-#> 1 effect_m        -0.0261 0.0749 -0.173  0.121
-#> 2 effect_y_lower   0.739  0.245   0.260  1.22 
-#> 3 effect_y_naive   1.24   0.233   0.783  1.70 
-#> 4 effect_y_upper   1.74   0.258   1.23   2.25 
-#> 5 mhat0            0.795  0.0545  0.689  0.902
-#> 6 mhat0_trunc      0.795  0.0545  0.689  0.902
+#> # A tibble: 2 x 5
+#>   estimand       estimate    se ci.min ci.max
+#>   <chr>             <dbl> <dbl>  <dbl>  <dbl>
+#> 1 effect_y_lower -0.00492 0.388 -0.766  0.756
+#> 2 effect_y_upper  2.14    0.397  1.36   2.92
 \end{verbatim}
 
 See the end of this page for a glossary of estimand terms in the output.
 
-\hypertarget{visualize-the-result}{%
-\section{Visualize the result}\label{visualize-the-result}}
+\section{Visualize the result}\label{visualize-the-result}
 
 One way to use this output to create visualizations using \texttt{ggplot}. For example, the code below visualizes bounded effects on the outcome.
 
@@ -936,8 +909,7 @@ One way to use this output to create visualizations using \texttt{ggplot}. For e
 
 \includegraphics{05_se_files/figure-latex/unnamed-chunk-6-1.pdf}
 
-\hypertarget{glossary-of-estimands-that-result}{%
-\section{Glossary of estimands that result}\label{glossary-of-estimands-that-result}}
+\section{Glossary of estimands that result}\label{glossary-of-estimands-that-result}
 
 \begin{longtable}[]{@{}
   >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}

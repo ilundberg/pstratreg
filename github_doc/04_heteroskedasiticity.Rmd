@@ -57,7 +57,7 @@ With the data setup above, we can estimate the models.
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a",
   homoskedastic = FALSE
@@ -73,7 +73,7 @@ Optionally, you can specify a separate model formula for the model of squared re
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   formula_sq_resid = formula(~ x + a),
   data = data,
   treatment_name = "a",

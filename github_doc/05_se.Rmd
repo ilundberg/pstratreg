@@ -26,7 +26,7 @@ and produce point estimates with a call to `pstratreg`.
 ```{r}
 pstratreg.out <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a"
 )

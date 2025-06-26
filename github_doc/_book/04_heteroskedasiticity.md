@@ -45,7 +45,7 @@ $$\begin{aligned}
 You can relax the homskedasticity assumption with the `homoskedastic = FALSE` argument. Doing so estimates a variance function regression (as above) using the same predictor model formula as in `formula_y`.
 
 
-```r
+``` r
 library(tidyverse)
 library(pstratreg)
 data <- pstratreg_sim(n = 100)
@@ -54,10 +54,10 @@ data <- pstratreg_sim(n = 100)
 With the data setup above, we can estimate the models.
 
 
-```r
+``` r
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a",
   homoskedastic = FALSE
@@ -66,26 +66,26 @@ result <- pstratreg(
 
 
 ```
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 × 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.743 0.646   0.0967
+#> 1 0.752 0.776   0.0239
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 × 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.433           1.18           1.94
+#> # A tibble: 1 × 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1          0.102           2.58
 ```
 
 Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for $Y$, which might be done if the model formula involves many parameters and you see errors from the internal `glm()` call about convergence for the variance regression.
 
 
-```r
+``` r
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   formula_sq_resid = formula(~ x + a),
   data = data,
   treatment_name = "a",
@@ -95,15 +95,15 @@ result <- pstratreg(
 
 
 ```
-#> Effect on mediator, where mediator indicates whether outcome will be valid
+#> Effect on survival, where S = 1 indicates the outcome exists
 #> # A tibble: 1 × 3
-#>   mhat1 mhat0 effect_m
+#>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.743 0.646   0.0967
+#> 1 0.752 0.776   0.0239
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
-#> # A tibble: 1 × 3
-#>   effect_y_lower effect_y_naive effect_y_upper
-#>            <dbl>          <dbl>          <dbl>
-#> 1          0.417           1.18           1.95
+#> # A tibble: 1 × 2
+#>   effect_y_lower effect_y_upper
+#>            <dbl>          <dbl>
+#> 1         0.0952           2.59
 ```

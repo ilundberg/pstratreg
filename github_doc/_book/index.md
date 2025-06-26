@@ -1,7 +1,7 @@
 --- 
 title: "pstratreg: An R package"
 author: "Ian Lundberg and Soonhong Cho"
-date: "2023-10-22"
+date: "2025-06-25"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -15,7 +15,7 @@ csl: chicago-fullnote-bibliography.csl
 
 # Welcome! {-}
 
-> **WARNING.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.^[Ian Lundberg ([ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho ([soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu))]
+> **Warning.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.^[Ian Lundberg ([ianlundberg@ucla.edu](mailto:ianlundberg@ucla.edu)) and Soonhong Cho ([soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu))]. You can also see our [**draft**](https://tinyurl.com/nonexistentoutcomes) and [**slides**](assets/nonexistentoutcomes_utokyo.pdf) from a presentation of this project.
 
 This website documents the **pstratreg** package for R. The package helps study causal effects when some treatment values cause outcomes to be non-existent for some units.
 
@@ -32,10 +32,10 @@ This package provides regression-based methods for principal stratification that
 To get started, first install [R and RStudio](https://rstudio-education.github.io/hopr/starting.html). Then install the package.
 
 
-```r
+``` r
 devtools::install_github("ilundberg/pstratreg")
 ```
   
 Now head on to the next page to see the types of questions this package can help answer.
 
-This project is joint work between Ian Lundberg (Cornell, [ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu)).
+This project is joint work between Ian Lundberg (UCLA, [ianlundberg@ucla.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [tnsehdtm@gmail.com](mailto:tnsehdtm@gmail.com)).

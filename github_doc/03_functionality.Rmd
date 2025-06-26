@@ -51,7 +51,7 @@ The call below runs a principal stratification regression analysis with default 
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a"
 )
@@ -74,7 +74,7 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a",
   monotonicity_positive = TRUE
@@ -93,7 +93,7 @@ In this particular simulation, negative monotonicity does not hold and you see b
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a",
   monotonicity_negative = TRUE
@@ -121,7 +121,7 @@ and then we apply the function to estimate within those groups.
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data_with_groups,
   treatment_name = "a",
   group_vars = c("group1","group2")
@@ -145,7 +145,7 @@ and then call the function. Note that the `glm()` used internally to estimate lo
 ```{r}
 result <- pstratreg(
   formula_y = formula(y ~ x*a),
-  formula_m = formula(m ~ x*a),
+  formula_s = formula(s ~ x*a),
   data = data,
   treatment_name = "a",
   weights = sim_weights
