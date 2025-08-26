@@ -42,11 +42,11 @@ data <- pstratreg_sim(n = 100)
 
 ```
 #>            x     a     s          y
-#> 1  1.1159549  TRUE  TRUE  0.9880554
-#> 2 -0.9210486  TRUE  TRUE -1.0432375
-#> 3 -0.5526245 FALSE FALSE         NA
-#> 4 -0.6941946 FALSE  TRUE -0.6122332
-#> 5  3.9533146  TRUE  TRUE  5.0127448
+#> 1 -0.1979533 FALSE FALSE         NA
+#> 2 -0.5851671  TRUE  TRUE  0.2876437
+#> 3  1.6740778  TRUE  TRUE  1.8664887
+#> 4  0.7291774 FALSE  TRUE  0.2222438
+#> 5 -0.9360662 FALSE  TRUE -2.1884730
 ```
     
 ## The `pstratreg` function
@@ -61,8 +61,6 @@ result <- pstratreg(
   data = data,
   treatment_name = "a"
 )
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1
-#> occurred
 ```
 
 
@@ -71,13 +69,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.705 0.923    0.219
+#> 1 0.633 0.778    0.145
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.306           1.25
+#> 1         -0.596           2.41
 ```
 
 ## Positive monotonicity
@@ -99,9 +97,7 @@ result <- pstratreg(
   treatment_name = "a",
   monotonicity_positive = TRUE
 )
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1
-#> occurred
-#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_s = formula(s ~ : Monotonicity violated in 8 % of cases
+#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_s = formula(s ~ : Monotonicity violated in 3 % of cases
 #> Forcing s1_trunc = s0_trunc at midpoint of estimates for those
 ```
 
@@ -110,13 +106,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.705 0.923    0.219
+#> 1 0.633 0.778    0.145
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.347           1.18
+#> 1          0.672           1.20
 ```
 
 ## Negative monotonicity
@@ -134,9 +130,7 @@ result <- pstratreg(
   treatment_name = "a",
   monotonicity_negative = TRUE
 )
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1
-#> occurred
-#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_s = formula(s ~ : Monotonicity violated in 92 % of cases
+#> Warning in pstratreg(formula_y = formula(y ~ x * a), formula_s = formula(s ~ : Monotonicity violated in 97 % of cases
 #> Forcing s1_trunc = s0_trunc at midpoint of estimates for those
 ```
 
@@ -145,13 +139,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.705 0.923    0.219
+#> 1 0.633 0.778    0.145
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.760          0.766
+#> 1          0.959          0.961
 ```
 
 ## Aggregate in subgroups
@@ -168,12 +162,12 @@ data_with_groups <- data %>%
 
 ```
 #>            x     a     s          y group1 group2
-#> 1  1.1159549  TRUE  TRUE  0.9880554  FALSE   TRUE
-#> 2 -0.9210486  TRUE  TRUE -1.0432375   TRUE  FALSE
-#> 3 -0.5526245 FALSE FALSE         NA   TRUE  FALSE
-#> 4 -0.6941946 FALSE  TRUE -0.6122332   TRUE  FALSE
-#> 5  3.9533146  TRUE  TRUE  5.0127448  FALSE   TRUE
-#> 6  0.5815356  TRUE  TRUE  2.1603457  FALSE   TRUE
+#> 1 -0.1979533 FALSE FALSE         NA  FALSE  FALSE
+#> 2 -0.5851671  TRUE  TRUE  0.2876437   TRUE  FALSE
+#> 3  1.6740778  TRUE  TRUE  1.8664887  FALSE   TRUE
+#> 4  0.7291774 FALSE  TRUE  0.2222438  FALSE   TRUE
+#> 5 -0.9360662 FALSE  TRUE -2.1884730   TRUE  FALSE
+#> 6  0.8360135 FALSE  TRUE  0.1079368  FALSE   TRUE
 ```
 
 and then we apply the function to estimate within those groups.
@@ -186,8 +180,6 @@ result <- pstratreg(
   treatment_name = "a",
   group_vars = c("group1","group2")
 )
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1
-#> occurred
 ```
 
 ```
@@ -195,18 +187,18 @@ result <- pstratreg(
 #> # A tibble: 3 × 5
 #>   group1 group2    s0    s1 effect_s
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.715 1        0.285
-#> 2 FALSE  TRUE   0.813 1        0.187
-#> 3 TRUE   FALSE  0.593 0.752    0.159
+#> 1 FALSE  FALSE  0.701 0.817   0.116 
+#> 2 FALSE  TRUE   0.895 0.914   0.0190
+#> 3 TRUE   FALSE  0.406 0.657   0.251 
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 3 × 4
 #> # Groups:   group1, group2 [3]
 #>   group1 group2 effect_y_lower effect_y_upper
 #>   <lgl>  <lgl>           <dbl>          <dbl>
-#> 1 FALSE  TRUE            0.729           1.36
-#> 2 TRUE   FALSE          -0.276           1.24
-#> 3 FALSE  FALSE           0.263           1.18
+#> 1 FALSE  FALSE         -0.0429          2.03 
+#> 2 TRUE   FALSE         -2.89            6.14 
+#> 3 FALSE  TRUE          -0.0880          0.718
 ```
 
 ## Sample weights
@@ -232,8 +224,6 @@ result <- pstratreg(
 )
 #> Warning in eval(family$initialize): non-integer #successes
 #> in a binomial glm!
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1
-#> occurred
 ```
 
 ```
@@ -241,11 +231,11 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.723 0.930    0.208
+#> 1 0.634 0.747    0.113
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.304           1.23
+#> 1         -0.982           2.47
 ```

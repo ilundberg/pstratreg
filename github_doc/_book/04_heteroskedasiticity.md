@@ -70,13 +70,13 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.752 0.776   0.0239
+#> 1 0.745 0.862    0.117
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.102           2.58
+#> 1          0.160           1.86
 ```
 
 Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for $Y$, which might be done if the model formula involves many parameters and you see errors from the internal `glm()` call about convergence for the variance regression.
@@ -99,11 +99,11 @@ result <- pstratreg(
 #> # A tibble: 1 × 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.752 0.776   0.0239
+#> 1 0.745 0.862    0.117
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 × 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1         0.0952           2.59
+#> 1          0.128           1.89
 ```

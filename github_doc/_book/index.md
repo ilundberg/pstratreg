@@ -1,7 +1,7 @@
 --- 
 title: "pstratreg: An R package"
 author: "Ian Lundberg and Soonhong Cho"
-date: "2025-06-25"
+date: "2025-08-26"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -15,7 +15,7 @@ csl: chicago-fullnote-bibliography.csl
 
 # Welcome! {-}
 
-> **Warning.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.^[Ian Lundberg ([ianlundberg@ucla.edu](mailto:ianlundberg@ucla.edu)) and Soonhong Cho ([soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu))]. You can also see our [**draft**](https://tinyurl.com/nonexistentoutcomes) and [**slides**](assets/nonexistentoutcomes_utokyo.pdf) from a presentation of this project.
+> **Warning.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.^[Ian Lundberg ([ianlundberg@ucla.edu](mailto:ianlundberg@ucla.edu)) and Soonhong Cho ([soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu))]. You can also see our [**draft**](https://arxiv.org/abs/2508.14770) and [**slides**](assets/nonexistentoutcomes_utokyo.pdf) from a presentation of this project.
 
 This website documents the **pstratreg** package for R. The package helps study causal effects when some treatment values cause outcomes to be non-existent for some units.
 

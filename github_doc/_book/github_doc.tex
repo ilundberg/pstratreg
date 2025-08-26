@@ -120,7 +120,7 @@
 
 \title{pstratreg: An R package}
 \author{Ian Lundberg and Soonhong Cho}
-\date{2025-06-25}
+\date{2025-08-26}
 
 \begin{document}
 \maketitle
@@ -133,7 +133,7 @@
 \addcontentsline{toc}{chapter}{Welcome!}
 
 \begin{quote}
-\textbf{Warning.} This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.\footnote{Ian Lundberg (\href{mailto:ianlundberg@ucla.edu}{\nolinkurl{ianlundberg@ucla.edu}}) and Soonhong Cho (\href{mailto:soonhongcho@g.ucla.edu}{\nolinkurl{soonhongcho@g.ucla.edu}})}. You can also see our \href{https://tinyurl.com/nonexistentoutcomes}{\textbf{draft}} and \href{assets/nonexistentoutcomes_utokyo.pdf}{\textbf{slides}} from a presentation of this project.
+\textbf{Warning.} This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions.\footnote{Ian Lundberg (\href{mailto:ianlundberg@ucla.edu}{\nolinkurl{ianlundberg@ucla.edu}}) and Soonhong Cho (\href{mailto:soonhongcho@g.ucla.edu}{\nolinkurl{soonhongcho@g.ucla.edu}})}. You can also see our \href{https://arxiv.org/abs/2508.14770}{\textbf{draft}} and \href{assets/nonexistentoutcomes_utokyo.pdf}{\textbf{slides}} from a presentation of this project.
 \end{quote}
 
 This website documents the \textbf{pstratreg} package for R. The package helps study causal effects when some treatment values cause outcomes to be non-existent for some units.
@@ -515,11 +515,11 @@ The data has four variables
 
 \begin{verbatim}
 #>            x     a     s          y
-#> 1 -0.3995057  TRUE  TRUE  1.7729094
-#> 2 -0.5056109  TRUE  TRUE -0.9123792
-#> 3  2.1129859  TRUE  TRUE  3.7708568
-#> 4 -0.9167857 FALSE FALSE         NA
-#> 5 -0.7186774 FALSE FALSE         NA
+#> 1 -1.9122208 FALSE FALSE         NA
+#> 2 -0.7676647 FALSE  TRUE -0.1775097
+#> 3 -1.6331539 FALSE  TRUE -1.9658900
+#> 4 -0.4652854 FALSE  TRUE -1.6908824
+#> 5 -1.0495272 FALSE FALSE         NA
 \end{verbatim}
 
 \section{\texorpdfstring{The \texttt{pstratreg} function}{The pstratreg function}}\label{the-pstratreg-function}
@@ -542,13 +542,13 @@ The call below runs a principal stratification regression analysis with default 
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.810 0.813  0.00336
+#> 1 0.809 0.848   0.0390
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.380           2.10
+#> 1          0.695           1.83
 \end{verbatim}
 
 \section{Positive monotonicity}\label{positive-monotonicity}
@@ -570,7 +570,7 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_positive =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 62 \% of cases}
+\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 64 \% of cases}
 \CommentTok{\#\textgreater{} Forcing s1\_trunc = s0\_trunc at midpoint of estimates for those}
 \end{Highlighting}
 \end{Shaded}
@@ -580,13 +580,13 @@ Generally, if the warning tells you that monotonicity is violated in only a smal
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.810 0.813  0.00336
+#> 1 0.809 0.848   0.0390
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1           1.22           1.25
+#> 1           1.20           1.33
 \end{verbatim}
 
 \section{Negative monotonicity}\label{negative-monotonicity}
@@ -604,7 +604,7 @@ In this particular simulation, negative monotonicity does not hold and you see b
   \AttributeTok{treatment\_name =} \StringTok{"a"}\NormalTok{,}
   \AttributeTok{monotonicity\_negative =} \ConstantTok{TRUE}
 \NormalTok{)}
-\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 38 \% of cases}
+\CommentTok{\#\textgreater{} Warning in pstratreg(formula\_y = formula(y \textasciitilde{} x * a), formula\_s = formula(s \textasciitilde{} : Monotonicity violated in 36 \% of cases}
 \CommentTok{\#\textgreater{} Forcing s1\_trunc = s0\_trunc at midpoint of estimates for those}
 \end{Highlighting}
 \end{Shaded}
@@ -614,13 +614,13 @@ In this particular simulation, negative monotonicity does not hold and you see b
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.810 0.813  0.00336
+#> 1 0.809 0.848   0.0390
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1           1.23           1.26
+#> 1           1.26           1.37
 \end{verbatim}
 
 \section{Aggregate in subgroups}\label{aggregate-in-subgroups}
@@ -638,13 +638,13 @@ First we create some groups for illustration
 \end{Shaded}
 
 \begin{verbatim}
-#>             x     a     s          y group1 group2
-#> 1 -0.39950575  TRUE  TRUE  1.7729094  FALSE  FALSE
-#> 2 -0.50561090  TRUE  TRUE -0.9123792   TRUE  FALSE
-#> 3  2.11298587  TRUE  TRUE  3.7708568  FALSE   TRUE
-#> 4 -0.91678566 FALSE FALSE         NA   TRUE  FALSE
-#> 5 -0.71867737 FALSE FALSE         NA   TRUE  FALSE
-#> 6 -0.04953687 FALSE FALSE         NA  FALSE  FALSE
+#>            x     a     s           y group1 group2
+#> 1 -1.9122208 FALSE FALSE          NA   TRUE  FALSE
+#> 2 -0.7676647 FALSE  TRUE -0.17750966   TRUE  FALSE
+#> 3 -1.6331539 FALSE  TRUE -1.96588997   TRUE  FALSE
+#> 4 -0.4652854 FALSE  TRUE -1.69088236  FALSE  FALSE
+#> 5 -1.0495272 FALSE FALSE          NA   TRUE  FALSE
+#> 6  0.1214910 FALSE  TRUE  0.04738583  FALSE  FALSE
 \end{verbatim}
 
 and then we apply the function to estimate within those groups.
@@ -666,18 +666,18 @@ and then we apply the function to estimate within those groups.
 #> # A tibble: 3 x 5
 #>   group1 group2    s0    s1 effect_s
 #>   <lgl>  <lgl>  <dbl> <dbl>    <dbl>
-#> 1 FALSE  FALSE  0.869 0.863 -0.00610
-#> 2 FALSE  TRUE   0.959 0.951 -0.00793
-#> 3 TRUE   FALSE  0.624 0.645  0.0212 
+#> 1 FALSE  FALSE  0.902 0.876  -0.0267
+#> 2 FALSE  TRUE   0.991 0.959  -0.0318
+#> 3 TRUE   FALSE  0.486 0.678   0.192 
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 3 x 4
 #> # Groups:   group1, group2 [3]
 #>   group1 group2 effect_y_lower effect_y_upper
 #>   <lgl>  <lgl>           <dbl>          <dbl>
-#> 1 FALSE  FALSE           0.668           1.75
-#> 2 TRUE   FALSE          -1.35            3.40
-#> 3 FALSE  TRUE            1.21            1.60
+#> 1 TRUE   FALSE          -0.273          4.16 
+#> 2 FALSE  FALSE           1.04           1.92 
+#> 3 FALSE  TRUE            0.759          0.980
 \end{verbatim}
 
 \section{Sample weights}\label{sample-weights}
@@ -713,13 +713,13 @@ and then call the function. Note that the \texttt{glm()} used internally to esti
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.792 0.787 -0.00493
+#> 1 0.812 0.803 -0.00923
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1          0.332           2.17
+#> 1          0.576           1.64
 \end{verbatim}
 
 \chapter{Relaxing homoskedasticity}\label{relaxing-homoskedasticity}
@@ -791,13 +791,13 @@ With the data setup above, we can estimate the models.
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.641 0.894    0.253
+#> 1 0.708 0.782   0.0734
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1         0.0246           1.74
+#> 1          0.192           2.65
 \end{verbatim}
 
 Optionally, you can specify a separate model formula for the model of squared residuals that may be simpler than the model formula used for \(Y\), which might be done if the model formula involves many parameters and you see errors from the internal \texttt{glm()} call about convergence for the variance regression.
@@ -820,13 +820,13 @@ Optionally, you can specify a separate model formula for the model of squared re
 #> # A tibble: 1 x 3
 #>      s0    s1 effect_s
 #>   <dbl> <dbl>    <dbl>
-#> 1 0.641 0.894    0.253
+#> 1 0.708 0.782   0.0734
 #> 
 #> Effect on outcome among those who would have a valid outcome regardless of treatment
 #> # A tibble: 1 x 2
 #>   effect_y_lower effect_y_upper
 #>            <dbl>          <dbl>
-#> 1         0.0555           1.70
+#> 1          0.194           2.65
 \end{verbatim}
 
 \chapter{Standard errors}\label{standard-errors}
@@ -879,8 +879,8 @@ The output of a call to \texttt{pstratreg\_se} is a data frame containing estima
 #> # A tibble: 2 x 5
 #>   estimand       estimate    se ci.min ci.max
 #>   <chr>             <dbl> <dbl>  <dbl>  <dbl>
-#> 1 effect_y_lower -0.00492 0.388 -0.766  0.756
-#> 2 effect_y_upper  2.14    0.397  1.36   2.92
+#> 1 effect_y_lower  -0.0415 0.380 -0.786  0.703
+#> 2 effect_y_upper   1.93   0.363  1.22   2.64
 \end{verbatim}
 
 See the end of this page for a glossary of estimand terms in the output.
