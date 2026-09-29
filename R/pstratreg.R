@@ -478,7 +478,7 @@ pstratreg <- function(
       tidyr::pivot_wider(names_from = "name", values_from = "estimate")
 
     # Bound the effect on Y
-    if (monotonicity_positive | monotonicity_positive) {
+    if (monotonicity_positive | monotonicity_negative) {
       aggregate_estimate <- estimates_y |>
         # note that p_always_lower = p_always_upper with monotonicity, is point-identified
         dplyr::mutate(weight = sample_weight_variable * p_always_lower) |>
