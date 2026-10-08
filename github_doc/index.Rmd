@@ -32,9 +32,9 @@ This package provides regression-based methods for principal stratification that
 To get started, first install [R and RStudio](https://rstudio-education.github.io/hopr/starting.html). Then install the package.
 
 ```{r, eval = F}
-devtools::install_github("ilundberg/pstratreg")
+pak::pak("ilundberg/pstratreg")
 ```
   
 Now head on to the next page to see the types of questions this package can help answer.
 
-This project is joint work between Ian Lundberg (UCLA, [ianlundberg@ucla.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [tnsehdtm@gmail.com](mailto:tnsehdtm@gmail.com)).
+This project is joint work between Ian Lundberg (UCLA, [ianlundberg@ucla.edu](mailto:ianlundberg@ucla.edu)) and Soonhong Cho (UCLA, [tnsehdtm@gmail.com](mailto:tnsehdtm@gmail.com)).
