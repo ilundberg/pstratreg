@@ -13,7 +13,7 @@ print.pstratreg <- function(x,...) {
   }
 
   # Initialize some objects for non-standard evaluation
-  mhat1 <- mhat0 <- effect_m <- NULL
+  s0 <- s1 <- effect_s <- NULL
 
   cat("Effect on survival, where S = 1 indicates the outcome exists\n")
   print(

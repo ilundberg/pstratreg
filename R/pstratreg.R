@@ -47,8 +47,8 @@ pstratreg <- function(
     data,
     weights = NULL, # numeric vector of weights, of length nrow(data)
     treatment_name,
-    monotonicity_positive = FALSE, # logical. Assume M1 >= M0?
-    monotonicity_negative = FALSE, # logical. Assume M1 <= M0?
+    monotonicity_positive = FALSE, # logical. Assume S1 >= S0?
+    monotonicity_negative = FALSE, # logical. Assume S1 <= S0?
     mean_dominance_y1_positive = FALSE,
     mean_dominance_y1_negative = FALSE,
     mean_dominance_y0_positive = FALSE,
@@ -83,8 +83,11 @@ pstratreg <- function(
   if (!methods::is(formula_s, "formula")) {
     stop("formula_s must be a formula object")
   }
-  # Check that mediator and outcome have different outcomes
-  if (as.character(formula_y)[2] == as.character(formula_s)[2]) {
+  # Check that mediator and outcome each have one outcome and they are different
+  if (length(all.vars(formula_y[[2]])) > 1 | length(all.vars(formula_s[[2]])) > 1) {
+    stop("formula_y and formula_s should each have only one variable on the left side")
+  }
+  if (all(all.vars(formula_y[[2]]) == all.vars(formula_s[[2]]))) {
     stop("formula_y and formula_s should have different outcomes")
   }
 
@@ -210,7 +213,7 @@ pstratreg <- function(
   }
 
   # Initialize some objects for non-standard evaluation
-  s1 <- s0 <- effect_m <- sample_weight_variable <-
+  s1 <- s0 <- effect_s <- sample_weight_variable <-
     p_always_survive <- value <- effect_y_lower <- effect_y_upper <-
     weight <- weight_lower <- weight_upper <- estimate <- NULL
 
@@ -323,6 +326,7 @@ pstratreg <- function(
 
   # Create lower and upper bounds on expected value of Y
   if (family_y$family == "binomial") {
+    fit_sq_resid <- NULL
 
     # lower bound assumes all compliers + defiers are y = 1
     yhat0_lower <- (yhat0_naive - to_drop_upper_0) / (1 - to_drop_upper_0)
@@ -356,61 +360,30 @@ pstratreg <- function(
       resid_sd <- sqrt(stats::predict(fit_sq_resid, newdata = data, type = "response"))
     }
 
-    # Make many draws from a standard normal residual
-    std_residual_draws <- sort(stats::rnorm(10e3))
-
-    # Make an estimator for the residual means of each case
-    residual_mean_estimator <- function(prop_always, resid_sd, std_residual_draws, upper = T) {
-      if (prop_always == 1) {
-        return(0)
-      }
+    # Make an estimator for the residual means of each case.
+    # Use analytical formula for mean of truncated standard Normal.
+    residual_mean_estimator <- function(prop_always, resid_sd, upper = T) {
       if (upper) {
-        keep <- round((1 - prop_always) * length(std_residual_draws)):length(std_residual_draws)
+        a <- stats::qnorm(1 - prop_always)
+        b <- Inf
       } else {
-        keep <- 1:round(prop_always * length(std_residual_draws))
+        a <- -Inf
+        b <- stats::qnorm(prop_always)
       }
-      # Take the mean of the standard residual draws
-      keep_mean <- mean(std_residual_draws[keep])
-      # Scale by the residual standard error
-      scaled <- keep_mean * resid_sd
-      return(scaled)
+      return(
+        resid_sd * (
+          (stats::dnorm(a) - stats::dnorm(b)) / (stats::pnorm(b) - stats::pnorm(a))
+        )
+      )
     }
 
-    # Loop over cases to produce residual mean estimates
+    # Produce residual mean estimates
     # Note that in each case, we set prop_always to the smallest possible value
-    # which results in the most extreme possible estimates
-    residual_means_upper_0 <- sapply(1:nrow(data), function(i) {
-      residual_mean_estimator(
-        prop_always = p_always_lower_0[i],
-        resid_sd = resid_sd[i],
-        std_residual_draws = std_residual_draws,
-        upper = T
-      )
-    })
-    residual_means_upper_1 <- sapply(1:nrow(data), function(i) {
-      residual_mean_estimator(
-        prop_always = p_always_lower_1[i],
-        resid_sd = resid_sd[i],
-        std_residual_draws = std_residual_draws,
-        upper = T
-      )
-    })
-    residual_means_lower_0 <- sapply(1:nrow(data), function(i) {
-      residual_mean_estimator(
-        prop_always = p_always_lower_0[i],
-        resid_sd = resid_sd[i],
-        std_residual_draws = std_residual_draws,
-        upper = F
-      )
-    })
-    residual_means_lower_1 <- sapply(1:nrow(data), function(i) {
-      residual_mean_estimator(
-        prop_always = p_always_lower_1[i],
-        resid_sd = resid_sd[i],
-        std_residual_draws = std_residual_draws,
-        upper = F
-      )
-    })
+    residual_means_upper_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = T)
+    residual_means_upper_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = T)
+    residual_means_lower_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = F)
+    residual_means_lower_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = F)
+
     yhat0_lower <- yhat0_naive + residual_means_lower_0
     yhat0_upper <- yhat0_naive + residual_means_upper_0
     yhat1_lower <- yhat1_naive + residual_means_lower_1
@@ -571,9 +544,14 @@ pstratreg <- function(
         estimates_y_for_bounds$effect_y_lower[[group_index]] <- aggregate_lower_estimate
         estimates_y_for_bounds$effect_y_upper[[group_index]] <- aggregate_upper_estimate
       }
-      aggregate_estimate <- estimates_y_for_bounds |>
-        dplyr::mutate(data = purrr::map(data, function(x) x |> dplyr::select(tidyselect::any_of(c(group_vars))) |> dplyr::distinct())) |>
-        tidyr::unnest(cols = data)
+      if (!is.null(group_vars)) {
+        aggregate_estimate <- estimates_y_for_bounds |>
+          dplyr::mutate(data = purrr::map(data, function(x) x |> dplyr::select(tidyselect::any_of(c(group_vars))) |> dplyr::distinct())) |>
+          tidyr::unnest(cols = data)
+      } else {
+        aggregate_estimate <- estimates_y_for_bounds |>
+          dplyr::select(-data)
+      }
     }
     estimates_y <- aggregate_estimate
   }
