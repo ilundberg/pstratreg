@@ -28,7 +28,7 @@ pstratreg(
 
 \item{formula_s}{A model formula for the binary indicator for whether the outcome exists}
 
-\item{formula_sq_resid}{A model formula for the squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula.}
+\item{formula_sq_resid}{A model formula for the log mean of squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula. Can be NULL if `homoskedastic = TRUE` because then there is no model for the conditional variance, which is assumed to be constant.}
 
 \item{family_y}{Character family of the outcome, either \code{"gaussian"} or \code{"binomial"}}
 
@@ -38,7 +38,7 @@ pstratreg(
 
 \item{weights}{A numeric vector of weights, of length \code{nrow(data)}}
 
-\item{treatment_name}{A character for the name of the treatment in \code{data},}
+\item{treatment_name}{A character string for the name of the treatment variable in \code{data},}
 
 \item{monotonicity_positive}{A logical. Whether to assume M1 >= M0, so that treatment never causes the outcome to be undefined}
 
@@ -57,7 +57,13 @@ pstratreg(
 \item{group_vars}{Character vector of names of variables in \code{data} by which to group when aggregating results. Only relevant when \code{aggregate = TRUE}}
 }
 \value{
-An object of class \code{pstratreg}
+An object of class \code{pstratreg}, which is a list containing:
+  \item{estimates_y}{A data frame or tibble containing point bounds for the outcome values among those whose outcome exists regardless.}
+  \item{estimates_s}{A data frame or tibble containing point estimates for outcome existence.}
+  \item{fit_s}{The \code{glm} object for the model of outcome exsitence.}
+  \item{fit_y}{The \code{glm} or \code{lm} object for the model of outcome values conditional on existence.}
+  \item{fit_sq_resid}{The \code{glm} object for the model of squared outcome residuals under heteroskedasticity (if \code{homoskedastic = FALSE}).}
+  \item{call}{A list of arguments passed to the function.}
 }
 \description{
 Uses principal stratification and parametric models to bound the average causal effect among those who would have a valid outcome under either treatment condition

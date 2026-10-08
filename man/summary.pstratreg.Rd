@@ -7,12 +7,9 @@
 \method{summary}{pstratreg}(object, ...)
 }
 \arguments{
-\item{object}{An object of class `pstratreg`}
+\item{object}{An object of class \code{pstratreg}, such as the output of a call to \code{pstratreg()}}
 
 \item{...}{Other arguments to \code{summary} commands}
-}
-\value{
-Nothing. Prints summary of object
 }
 \description{
 Summarize results from principal stratification regression.

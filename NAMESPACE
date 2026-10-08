@@ -6,3 +6,13 @@ export(pstratreg)
 export(pstratreg_se)
 export(pstratreg_sim)
 importFrom(foreach,"%do%")
+importFrom(stats,
+  dnorm,
+  formula,
+  glm,
+  predict,
+  qnorm,
+  rnorm,
+  sd,
+  weighted.mean
+)

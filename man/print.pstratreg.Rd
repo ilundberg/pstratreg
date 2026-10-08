@@ -11,9 +11,6 @@
 
 \item{...}{Other arguments to \code{print} commands}
 }
-\value{
-Nothing. Prints summary of object
-}
 \description{
 Print results from principal stratification regression.
 }
