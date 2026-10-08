@@ -1,4 +1,8 @@
 
+# pstratreg 1.0.1
+
+* Minor improvements to documentation
+
 # pstratreg 1.0.0
 
 * First release that we intend to be stable

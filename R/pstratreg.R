@@ -3,12 +3,12 @@
 #' @description Uses principal stratification and parametric models to bound the average causal effect among those who would have a valid outcome under either treatment condition
 #' @param formula_y A model formula for the outcome
 #' @param formula_s A model formula for the binary indicator for whether the outcome exists
-#' @param formula_sq_resid A model formula for the squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula.
+#' @param formula_sq_resid A model formula for the log mean of squared residuals for a variance function regression. Should only use variables that are used in \code{formula_y}. Because the Gamma regression for squared residuals is more computationally demanding, one might want a simpler \code{formula_sq_resid} than \code{formula_y}, perhaps to allow only highly structured heteroskedasticity. Defaults to match \code{formula_y}. No outcome need be specified in this formula. Can be NULL if `homoskedastic = TRUE` because then there is no model for the conditional variance, which is assumed to be constant.
 #' @param family_y Character family of the outcome, either \code{"gaussian"} or \code{"binomial"}
 #' @param homoskedastic A logical for whether homoskedasticity of the outcome should be assumed. If \code{FALSE}, estimates by variance function regression for log squared residuals with the same formula as in \code{formula_y}.
 #' @param data A data frame
 #' @param weights A numeric vector of weights, of length \code{nrow(data)}
-#' @param treatment_name A character for the name of the treatment in \code{data},
+#' @param treatment_name A character string for the name of the treatment variable in \code{data},
 #' @param monotonicity_positive A logical. Whether to assume M1 >= M0, so that treatment never causes the outcome to be undefined
 #' @param monotonicity_negative A logical. Whether to assume M1 <= M0, so that lack of treatment never causes the outcome to be undefined
 #' @param mean_dominance_y1_positive A logical. Whether to assume E(Y1 | S1 = 1, S0 = 1) >= E(Y1 | S1 = 1, S0 = 0), so that the always-survivor treated units have mean outcomes at least as great as the observed-survivor treated units
@@ -17,7 +17,13 @@
 #' @param mean_dominance_y0_negative A logical. Whether to assume E(Y0 | S1 = 1, S0 = 1) <= E(Y0 | S1 = 0, S0 = 1), so that the always-survivor untreated units have mean outcomes no greater the observed-survivor untreated units
 #' @param aggregate A logical. Whether to aggregate results or return one estimate per row of \code{data}
 #' @param group_vars Character vector of names of variables in \code{data} by which to group when aggregating results. Only relevant when \code{aggregate = TRUE}
-#' @returns An object of class \code{pstratreg}
+#' @returns An object of class \code{pstratreg}, which is a list containing:
+#'   \item{estimates_y}{A data frame or tibble containing point bounds for the outcome values among those whose outcome exists regardless.}
+#'   \item{estimates_s}{A data frame or tibble containing point estimates for outcome existence.}
+#'   \item{fit_s}{The \code{glm} object for the model of outcome exsitence.}
+#'   \item{fit_y}{The \code{glm} or \code{lm} object for the model of outcome values conditional on existence.}
+#'   \item{fit_sq_resid}{The \code{glm} object for the model of squared outcome residuals under heteroskedasticity (if \code{homoskedastic = FALSE}).}
+#'   \item{call}{A list of arguments passed to the function.}
 #' @export
 #' @examples
 #' sim <- pstratreg_sim(n = 100)
