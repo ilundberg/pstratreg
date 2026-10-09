@@ -1,4 +1,8 @@
 
+# pstratreg 1.0.2
+
+* Simplified coding of analytical mean of truncated normal
+
 # pstratreg 1.0.1
 
 * Minor improvements to documentation

@@ -370,17 +370,10 @@ pstratreg <- function(
     # Use analytical formula for mean of truncated standard Normal.
     residual_mean_estimator <- function(prop_always, resid_sd, upper = T) {
       if (upper) {
-        a <- stats::qnorm(1 - prop_always)
-        b <- Inf
+        resid_sd * dnorm(qnorm(prop_always)) / prop_always
       } else {
-        a <- -Inf
-        b <- stats::qnorm(prop_always)
+        - resid_sd * dnorm(qnorm(prop_always)) / prop_always
       }
-      return(
-        resid_sd * (
-          (stats::dnorm(a) - stats::dnorm(b)) / (stats::pnorm(b) - stats::pnorm(a))
-        )
-      )
     }
 
     # Produce residual mean estimates

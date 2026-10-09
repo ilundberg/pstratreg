@@ -1,9 +1,7 @@
 Package: pstratreg
 Type: Package
 Title: Estimate Bounds via Principal Stratification
-Version: 1.0.1
-Author: Ian Lundberg and Soonhong Cho
-Maintainer: Ian Lundberg <ianlundberg@ucla.edu>
+Version: 1.0.2
 Description: When studying the causal effect of a treatment on an outcome, post-treatment events may render the outcome undefined. For example, the effect of job training on hourly wage is ill-defined for  those who would not be employed without job training. This package estimates average causal effects among those whose outcome would be defined regardless of the intervention, producing a set-identified result.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -17,3 +15,7 @@ Imports:
     tidyr,
     tidyselect
 Config/roxygen2/version: 8.1.0
+Authors@R: c(
+    person("Ian", "Lundberg", role = c("aut", "cre"), email = "ianlundberg@ucla.edu"),
+    person("Soonhong", "Cho", role = "aut")
+  )
