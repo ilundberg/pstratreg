@@ -4,6 +4,7 @@
 #' @param x An object of class \code{pstratreg}, such as the output of a call to \code{pstratreg()}
 #' @param ... Other arguments to \code{print} commands
 #' @method print pstratreg
+#' @return No return value, called for side effects.
 #' @export
 #'
 

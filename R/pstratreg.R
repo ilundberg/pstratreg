@@ -20,7 +20,7 @@
 #' @returns An object of class \code{pstratreg}, which is a list containing:
 #'   \item{estimates_y}{A data frame or tibble containing point bounds for the outcome values among those whose outcome exists regardless.}
 #'   \item{estimates_s}{A data frame or tibble containing point estimates for outcome existence.}
-#'   \item{fit_s}{The \code{glm} object for the model of outcome exsitence.}
+#'   \item{fit_s}{The \code{glm} object for the model of outcome existence.}
 #'   \item{fit_y}{The \code{glm} or \code{lm} object for the model of outcome values conditional on existence.}
 #'   \item{fit_sq_resid}{The \code{glm} object for the model of squared outcome residuals under heteroskedasticity (if \code{homoskedastic = FALSE}).}
 #'   \item{call}{A list of arguments passed to the function.}
@@ -49,7 +49,7 @@ pstratreg <- function(
     formula_s,
     formula_sq_resid = NULL,
     family_y = "gaussian", # currently only gaussian and binomial
-    homoskedastic = T, # only relevant if family_y = gaussian
+    homoskedastic = TRUE, # only relevant if family_y = gaussian
     data,
     weights = NULL, # numeric vector of weights, of length nrow(data)
     treatment_name,
@@ -368,7 +368,7 @@ pstratreg <- function(
 
     # Make an estimator for the residual means of each case.
     # Use analytical formula for mean of truncated standard Normal.
-    residual_mean_estimator <- function(prop_always, resid_sd, upper = T) {
+    residual_mean_estimator <- function(prop_always, resid_sd, upper = TRUE) {
       if (upper) {
         resid_sd * dnorm(qnorm(prop_always)) / prop_always
       } else {
@@ -378,10 +378,10 @@ pstratreg <- function(
 
     # Produce residual mean estimates
     # Note that in each case, we set prop_always to the smallest possible value
-    residual_means_upper_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = T)
-    residual_means_upper_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = T)
-    residual_means_lower_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = F)
-    residual_means_lower_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = F)
+    residual_means_upper_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = TRUE)
+    residual_means_upper_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = TRUE)
+    residual_means_lower_0 <- residual_mean_estimator(prop_always = p_always_lower_0, resid_sd = resid_sd, upper = FALSE)
+    residual_means_lower_1 <- residual_mean_estimator(prop_always = p_always_lower_1, resid_sd = resid_sd, upper = FALSE)
 
     yhat0_lower <- yhat0_naive + residual_means_lower_0
     yhat0_upper <- yhat0_naive + residual_means_upper_0

@@ -11,6 +11,9 @@
 
 \item{...}{Other arguments to \code{print} commands}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Print results from principal stratification regression.
 }

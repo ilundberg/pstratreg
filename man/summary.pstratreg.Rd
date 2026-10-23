@@ -11,6 +11,9 @@
 
 \item{...}{Other arguments to \code{summary} commands}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Summarize results from principal stratification regression.
 }

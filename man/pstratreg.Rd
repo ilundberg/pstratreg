@@ -9,7 +9,7 @@ pstratreg(
   formula_s,
   formula_sq_resid = NULL,
   family_y = "gaussian",
-  homoskedastic = T,
+  homoskedastic = TRUE,
   data,
   weights = NULL,
   treatment_name,
@@ -60,7 +60,7 @@ pstratreg(
 An object of class \code{pstratreg}, which is a list containing:
   \item{estimates_y}{A data frame or tibble containing point bounds for the outcome values among those whose outcome exists regardless.}
   \item{estimates_s}{A data frame or tibble containing point estimates for outcome existence.}
-  \item{fit_s}{The \code{glm} object for the model of outcome exsitence.}
+  \item{fit_s}{The \code{glm} object for the model of outcome existence.}
   \item{fit_y}{The \code{glm} or \code{lm} object for the model of outcome values conditional on existence.}
   \item{fit_sq_resid}{The \code{glm} object for the model of squared outcome residuals under heteroskedasticity (if \code{homoskedastic = FALSE}).}
   \item{call}{A list of arguments passed to the function.}
