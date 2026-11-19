@@ -27,4 +27,4 @@ devtools::install_github("ilundberg/pstratreg")
   
 Now head on to the next page to see the types of questions this package can help answer.
 
-This project is joint work between Ian Lundberg (Cornell, [ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [soonhongcho@g.ucla.edu](mailto:soonhongcho@ucla.edu)).
+This project is joint work between Ian Lundberg (Cornell, [ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [soonhongcho@ucla.edu](mailto:soonhongcho@ucla.edu)).
