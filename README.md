@@ -5,7 +5,7 @@ Regression-Based Principal Stratification
 
 Ian updating as an example
 
-**WARNING.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions. Project is joint work by Ian Lundberg ([ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho ([soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu)).
+**WARNING.** This website documents an R package that is in development. Expect changes. We encourage you to try the package and email us with suggestions. Project is joint work by Ian Lundberg ([ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho ([soonhongcho@ucla.edu](mailto:soonhongcho@ucla.edu)).
 
 This website documents the **pstratreg** package for R. The package helps study causal effects when some treatment values cause outcomes to be non-existent for some units.
 
@@ -27,4 +27,4 @@ devtools::install_github("ilundberg/pstratreg")
   
 Now head on to the next page to see the types of questions this package can help answer.
 
-This project is joint work between Ian Lundberg (Cornell, [ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [soonhongcho@g.ucla.edu](mailto:soonhongcho@g.ucla.edu)).
+This project is joint work between Ian Lundberg (Cornell, [ilundberg@cornell.edu](mailto:ilundberg@cornell.edu)) and Soonhong Cho (UCLA, [soonhongcho@g.ucla.edu](mailto:soonhongcho@ucla.edu)).
